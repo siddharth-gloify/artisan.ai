@@ -162,15 +162,27 @@ def paste_asset(
     asset_path: Path,
     x: int,
     y: int,
-    width: int,
-    height: int,
+    target_w: Optional[int] = None,
+    target_h: Optional[int] = None,
     opacity: float = 1.0,
 ) -> None:
+    """Paste an asset at (x, y).  If target_w / target_h are given the asset is
+    scaled to fit within those bounds while preserving its aspect ratio."""
     if not asset_path.exists():
         return
     try:
         asset = Image.open(asset_path).convert("RGBA")
-        asset = asset.resize((width, height), Image.LANCZOS)
+        if target_w or target_h:
+            orig_w, orig_h = asset.size
+            if target_w and target_h:
+                scale = min(target_w / orig_w, target_h / orig_h)
+            elif target_w:
+                scale = target_w / orig_w
+            else:
+                scale = target_h / orig_h
+            new_w = max(1, round(orig_w * scale))
+            new_h = max(1, round(orig_h * scale))
+            asset = asset.resize((new_w, new_h), Image.LANCZOS)
         if opacity < 1.0:
             r, g, b, a = asset.split()
             a = a.point(lambda p: int(p * opacity))
@@ -259,10 +271,16 @@ def _compose_split_layout(
         if logo_path.exists():
             try:
                 logo = Image.open(logo_path).convert("RGBA")
-                lw = min(LOGO_MAX_W, ll.get("width", LOGO_MAX_W))
-                lh = int(logo.height * (lw / logo.width))
-                logo = logo.resize((lw, lh), Image.LANCZOS)
-                canvas.paste(logo, (width - PADDING - lw, PADDING), mask=logo.split()[3])
+                max_w = ll.get("width", 120)
+                max_h = ll.get("height", 120)
+                scale = min(max_w / logo.width, max_h / logo.height)
+                logo = logo.resize(
+                    (max(1, round(logo.width * scale)), max(1, round(logo.height * scale))),
+                    Image.LANCZOS,
+                )
+                lx = ll.get("x", width - PADDING - logo.width)
+                ly = ll.get("y", PADDING)
+                canvas.paste(logo, (lx, ly), mask=logo.split()[3])
             except Exception as exc:
                 log.warning("Split layout: could not paste logo: %s", exc)
 
@@ -272,7 +290,9 @@ def _compose_split_layout(
     headline_layer = session.get("headline_layer", {})
     if headline_layer.get("visible", True) and headline_layer.get("text"):
         hl_color = headline_layer.get("color", palette.get("text_primary", "#FFFFFF"))
-        font_hl = get_font(font_cfg, "headline", headline_layer.get("font_size", 72))
+        _hl_sz = headline_layer.get("font_size", 72)
+        font_hl = (_load_font(headline_layer["font_file"], _hl_sz)
+                   if headline_layer.get("font_file") else get_font(font_cfg, "headline", _hl_sz))
         hl_lines = _wrap_text(draw, headline_layer["text"], font_hl, max_text_w)
         try:
             sb = draw.textbbox((0, 0), "Ag", font=font_hl)
@@ -289,7 +309,9 @@ def _compose_split_layout(
     body_layer = session.get("body_layer", {})
     if body_layer.get("visible", True) and body_layer.get("text"):
         body_color = body_layer.get("color", palette.get("text_secondary", "#CCCCCC"))
-        font_body = get_font(font_cfg, "body", body_layer.get("font_size", 36))
+        _body_sz = body_layer.get("font_size", 36)
+        font_body = (_load_font(body_layer["font_file"], _body_sz)
+                     if body_layer.get("font_file") else get_font(font_cfg, "body", _body_sz))
         body_lines = _wrap_text(draw, body_layer["text"], font_body, max_text_w)
         try:
             sb = draw.textbbox((0, 0), "Ag", font=font_body)
@@ -359,8 +381,8 @@ def compose_post(session: dict, config: dict, session_dir: Path) -> Path:
             canvas,
             session_dir / "assets" / "header.png",
             hl.get("x", 0), hl.get("y", 0),
-            hl.get("width", width), hl.get("height", 160),
-            hl.get("opacity", 1.0),
+            target_w=width,          # scale to canvas width, height follows ratio
+            opacity=hl.get("opacity", 1.0),
         )
 
     # ── 4. Footer asset ──────────────────────────────────────────────────────
@@ -370,8 +392,8 @@ def compose_post(session: dict, config: dict, session_dir: Path) -> Path:
             canvas,
             session_dir / "assets" / "footer.png",
             fl.get("x", 0), fl.get("y", height - 160),
-            fl.get("width", width), fl.get("height", 160),
-            fl.get("opacity", 1.0),
+            target_w=width,          # scale to canvas width, height follows ratio
+            opacity=fl.get("opacity", 1.0),
         )
 
     # ── 5. Logo asset ────────────────────────────────────────────────────────
@@ -381,8 +403,8 @@ def compose_post(session: dict, config: dict, session_dir: Path) -> Path:
             canvas,
             session_dir / "assets" / "logo.png",
             ll.get("x", 54), ll.get("y", 54),
-            ll.get("width", 120), ll.get("height", 120),
-            ll.get("opacity", 1.0),
+            target_w=ll.get("width", 120), target_h=ll.get("height", 120),
+            opacity=ll.get("opacity", 1.0),
         )
 
     # ── 6. Text layers ───────────────────────────────────────────────────────
@@ -391,7 +413,9 @@ def compose_post(session: dict, config: dict, session_dir: Path) -> Path:
     hashtag_layer = session.get("hashtag_layer", {})
 
     if headline_layer.get("visible", True) and headline_layer.get("text"):
-        font = get_font(font_cfg, "headline", headline_layer.get("font_size", 64))
+        _hl_sz = headline_layer.get("font_size", 64)
+        font = (_load_font(headline_layer["font_file"], _hl_sz)
+                if headline_layer.get("font_file") else get_font(font_cfg, "headline", _hl_sz))
         draw_text_block(
             canvas,
             headline_layer["text"],
@@ -402,7 +426,9 @@ def compose_post(session: dict, config: dict, session_dir: Path) -> Path:
         )
 
     if body_layer.get("visible", True) and body_layer.get("text"):
-        font = get_font(font_cfg, "body", body_layer.get("font_size", 30))
+        _body_sz = body_layer.get("font_size", 30)
+        font = (_load_font(body_layer["font_file"], _body_sz)
+                if body_layer.get("font_file") else get_font(font_cfg, "body", _body_sz))
         draw_text_block(
             canvas,
             body_layer["text"],
@@ -412,16 +438,7 @@ def compose_post(session: dict, config: dict, session_dir: Path) -> Path:
             color=body_layer.get("color", "#EEEEEE"),
         )
 
-    if hashtag_layer.get("visible", True) and hashtag_layer.get("text"):
-        font = get_font(font_cfg, "body", hashtag_layer.get("font_size", 22))
-        draw_text_block(
-            canvas,
-            hashtag_layer["text"],
-            center_x=hashtag_layer.get("x", width // 2),
-            top_y=hashtag_layer.get("y", height - 120),
-            font=font,
-            color=hashtag_layer.get("color", "#AAAAAA"),
-        )
+    # hashtags are shown in the editor copy panel, not painted on the image
 
     # ── 7. Save ──────────────────────────────────────────────────────────────
     out = canvas.convert("RGB")

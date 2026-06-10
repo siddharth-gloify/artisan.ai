@@ -3,16 +3,17 @@
 
 {% block content %}
 <div class="setup-page">
+
   <!-- Hero -->
   <div class="hero">
-    <h1 class="hero-title">AI-Powered Instagram Posts</h1>
-    <p class="hero-sub">Choose your style. Enter a topic. PostForge does the rest.</p>
+    <h1 class="hero-title">Turn any idea into a<br /><em>polished Instagram post</em></h1>
+    <p class="hero-sub">Pick your industry, style, and tone — PostForge generates the copy and imagery in seconds.</p>
   </div>
 
   <!-- Quick Starts -->
   <section class="section">
-    <h2 class="section-title">Quick Start</h2>
-    <div class="quick-starts">
+    <h2 class="section-title">Start from a template</h2>
+    <div class="quick-starts" style="margin-top:14px;">
       {% for key, tmpl in quick_starts.items() %}
       <button class="quick-start-btn" data-template="{{ key }}"
               data-industry="{{ tmpl.industry }}"
@@ -33,7 +34,7 @@
     <section class="section" id="step-industry">
       <div class="step-header">
         <span class="step-badge">1</span>
-        <h2 class="section-title">Choose Your Industry</h2>
+        <h2 class="section-title">Industry</h2>
       </div>
       <div class="card-grid">
         {% for key, ind in industries.items() %}
@@ -51,7 +52,7 @@
     <section class="section" id="step-style">
       <div class="step-header">
         <span class="step-badge">2</span>
-        <h2 class="section-title">Image Style</h2>
+        <h2 class="section-title">Image style</h2>
         <span class="step-hint">Filtered for your industry</span>
       </div>
       <div class="style-filter-tabs">
@@ -67,7 +68,6 @@
                data-cat="{{ style.category }}"
                data-industries="{{ style.best_for | join(',') }}">
           <input type="radio" name="image_style" value="{{ key }}" required hidden />
-          <div class="style-preview" style="background: linear-gradient(135deg, #{{ loop.index0 * 31 % 255 | int }}4488, #8844{{ loop.index0 * 47 % 255 | int }});"></div>
           <span class="card-name">{{ style.name }}</span>
           <span class="card-desc">{{ style.mood }}</span>
           {% if style.trending_2025 %}<span class="badge-trending">Trending</span>{% endif %}
@@ -76,33 +76,33 @@
       </div>
     </section>
 
-    <!-- Step 2b: Image Model Tier -->
+    <!-- Step 2b: Image Quality -->
     <section class="section" id="step-tier">
       <div class="step-header">
-        <span class="step-badge" style="background:var(--surface-3);color:var(--text-2);">2b</span>
-        <h2 class="section-title">Image Quality</h2>
+        <span class="step-badge step-muted">2b</span>
+        <h2 class="section-title">Image quality</h2>
       </div>
       <div class="tier-grid">
         <label class="tier-card selected" data-tier="normal">
           <input type="radio" name="image_tier" value="normal" checked hidden />
           <div class="tier-badge normal">Normal</div>
           <div class="tier-model">gemini-2.5-flash</div>
-          <div class="tier-desc">Fast · Great for most posts</div>
-          <div class="tier-cost">⚡ Fastest</div>
+          <div class="tier-desc">Fast — great for most posts</div>
+          <div class="tier-cost">Fastest</div>
         </label>
         <label class="tier-card" data-tier="pro">
           <input type="radio" name="image_tier" value="pro" hidden />
           <div class="tier-badge pro">Pro</div>
           <div class="tier-model">gemini-3.1-flash</div>
           <div class="tier-desc">Balanced quality &amp; speed</div>
-          <div class="tier-cost">✦ Recommended</div>
+          <div class="tier-cost">Recommended</div>
         </label>
         <label class="tier-card" data-tier="max">
           <input type="radio" name="image_tier" value="max" hidden />
           <div class="tier-badge max">Max</div>
           <div class="tier-model">gemini-3-pro</div>
           <div class="tier-desc">Highest quality output</div>
-          <div class="tier-cost">★ Best results</div>
+          <div class="tier-cost">Best results</div>
         </label>
       </div>
     </section>
@@ -111,7 +111,7 @@
     <section class="section" id="step-tone">
       <div class="step-header">
         <span class="step-badge">3</span>
-        <h2 class="section-title">Caption Tone</h2>
+        <h2 class="section-title">Caption tone</h2>
       </div>
       <div class="card-grid tone-grid">
         {% for key, tone in caption_tones.items() %}
@@ -129,7 +129,7 @@
     <section class="section" id="step-palette">
       <div class="step-header">
         <span class="step-badge">4</span>
-        <h2 class="section-title">Color Palette</h2>
+        <h2 class="section-title">Color palette</h2>
       </div>
       <div class="palette-cat-tabs">
         <button type="button" class="filter-tab active" data-pcat="all">All</button>
@@ -158,8 +158,8 @@
     <section class="section" id="step-font">
       <div class="step-header">
         <span class="step-badge">5</span>
-        <h2 class="section-title">Font Style</h2>
-        <span class="step-hint">Auto-recommended based on your selections</span>
+        <h2 class="section-title">Font style</h2>
+        <span class="step-hint">Auto-recommended from your selections</span>
       </div>
       <div class="card-grid font-grid">
         {% for key, fnt in font_styles.items() %}
@@ -177,64 +177,62 @@
     <section class="section" id="step-topic">
       <div class="step-header">
         <span class="step-badge">6</span>
-        <h2 class="section-title">Your Content</h2>
+        <h2 class="section-title">Your content</h2>
       </div>
 
       <div class="content-form">
         <div class="form-group">
-          <label class="form-label">Topic / What's this post about? <span class="required">*</span></label>
+          <label class="form-label">What's this post about? <span class="required">*</span></label>
           <input class="form-input" type="text" name="topic" required
-                 placeholder="e.g. Our new AI product launch, Summer sale 50% off, Morning yoga routine..." />
+                 placeholder="e.g. Our new product launch, Summer sale 50% off, Morning yoga routine…" />
         </div>
 
-        <div class="assets-row">
-          <div class="asset-upload-card" id="logoUploadCard">
-            <span class="asset-icon">🏷️</span>
-            <span class="asset-label">Logo</span>
-            <span class="asset-hint">PNG recommended</span>
-            <input type="file" name="logo_file" id="logoFile" accept="image/*" hidden />
-            <button type="button" class="btn btn-sm" onclick="document.getElementById('logoFile').click()">Upload</button>
-            <span class="upload-status" id="logoStatus"></span>
-          </div>
+        <div>
+          <label class="form-label" style="margin-bottom:10px;display:block;">Assets <span style="font-weight:400;color:var(--text-3);">— optional</span></label>
+          <div class="assets-row">
+            <div class="asset-upload-card" id="logoUploadCard">
+              <span class="asset-label">Logo</span>
+              <span class="asset-hint">PNG recommended</span>
+              <input type="file" name="logo_file" id="logoFile" accept="image/*" hidden />
+              <button type="button" class="btn btn-sm" onclick="document.getElementById('logoFile').click()">Choose file</button>
+              <span class="upload-status" id="logoStatus"></span>
+            </div>
 
-          <div class="asset-upload-card" id="headerUploadCard">
-            <span class="asset-icon">🎯</span>
-            <span class="asset-label">Header Banner</span>
-            <span class="asset-hint">Full-width image</span>
-            <input type="file" name="header_file" id="headerFile" accept="image/*" hidden />
-            <button type="button" class="btn btn-sm" onclick="document.getElementById('headerFile').click()">Upload</button>
-            <span class="upload-status" id="headerStatus"></span>
-          </div>
+            <div class="asset-upload-card" id="headerUploadCard">
+              <span class="asset-label">Header banner</span>
+              <span class="asset-hint">Full-width image</span>
+              <input type="file" name="header_file" id="headerFile" accept="image/*" hidden />
+              <button type="button" class="btn btn-sm" onclick="document.getElementById('headerFile').click()">Choose file</button>
+              <span class="upload-status" id="headerStatus"></span>
+            </div>
 
-          <div class="asset-upload-card" id="footerUploadCard">
-            <span class="asset-icon">📌</span>
-            <span class="asset-label">Footer Banner</span>
-            <span class="asset-hint">Full-width image</span>
-            <input type="file" name="footer_file" id="footerFile" accept="image/*" hidden />
-            <button type="button" class="btn btn-sm" onclick="document.getElementById('footerFile').click()">Upload</button>
-            <span class="upload-status" id="footerStatus"></span>
-          </div>
+            <div class="asset-upload-card" id="footerUploadCard">
+              <span class="asset-label">Footer banner</span>
+              <span class="asset-hint">Full-width image</span>
+              <input type="file" name="footer_file" id="footerFile" accept="image/*" hidden />
+              <button type="button" class="btn btn-sm" onclick="document.getElementById('footerFile').click()">Choose file</button>
+              <span class="upload-status" id="footerStatus"></span>
+            </div>
 
-          <div class="asset-upload-card" id="bgUploadCard">
-            <span class="asset-icon">🖼️</span>
-            <span class="asset-label">Custom Background</span>
-            <span class="asset-hint">Replaces AI image</span>
-            <input type="file" name="bg_file" id="bgFile" accept="image/*" hidden />
-            <button type="button" class="btn btn-sm" onclick="document.getElementById('bgFile').click()">Upload</button>
-            <span class="upload-status" id="bgStatus"></span>
+            <div class="asset-upload-card" id="bgUploadCard">
+              <span class="asset-label">Custom background</span>
+              <span class="asset-hint">Replaces AI image</span>
+              <input type="file" name="bg_file" id="bgFile" accept="image/*" hidden />
+              <button type="button" class="btn btn-sm" onclick="document.getElementById('bgFile').click()">Choose file</button>
+              <span class="upload-status" id="bgStatus"></span>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Generate Button -->
+    <!-- Generate -->
     <div class="generate-footer">
       <div class="generate-summary" id="generateSummary">
         Select all options above to continue
       </div>
       <button type="submit" class="btn btn-primary btn-generate" id="generateBtn" disabled>
-        <span class="btn-icon">✨</span>
-        Generate Post
+        Generate post
       </button>
     </div>
 
@@ -339,10 +337,10 @@ function updateSummary() {
   const summary = document.getElementById("generateSummary");
   if (done >= REQUIRED.length) {
     btn.disabled = false;
-    summary.textContent = `Ready! ${Object.values(chosen).join(" · ")}`;
+    summary.textContent = `Ready — ${Object.values(chosen).join(" · ")}`;
   } else {
     btn.disabled = true;
-    summary.textContent = `${done}/${REQUIRED.length} selections made`;
+    summary.textContent = `${done} of ${REQUIRED.length} selections made`;
   }
 }
 

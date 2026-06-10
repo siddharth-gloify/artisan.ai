@@ -65,10 +65,44 @@ _NO_TEXT = (
 )
 
 
+_EXTENDED_JSON = (
+    '\n\nReturn ONLY valid JSON with exactly these fields:\n'
+    '{"headline": "short overlay headline for image (max 8 words)", '
+    '"body": "supporting image body text (max 150 chars)", '
+    '"social_caption": "standalone instagram caption in this same tone, 1-3 engaging sentences, no hashtags", '
+    '"hashtags": ["#tag1","#tag2","#tag3","#tag4","#tag5","#tag6","#tag7",'
+    '"#tag8","#tag9","#tag10","#tag11","#tag12","#tag13"]}'
+)
+
+
 def build_caption_prompt(topic: str, tone_config: dict, industry: str) -> str:
     label = INDUSTRY_LABELS.get(industry, industry)
     template = tone_config.get("llm_prompt", "")
-    return template.format(topic=topic, industry=label)
+    base = template.format(topic=topic, industry=label)
+    # Strip the old short JSON format line from the prompt and inject the extended one
+    lines = base.splitlines()
+    while lines and not lines[-1].strip():
+        lines.pop()
+    if lines and lines[-1].strip().startswith("{"):
+        lines.pop()
+    while lines and not lines[-1].strip():
+        lines.pop()
+    if lines and "Return ONLY valid JSON" in lines[-1]:
+        lines.pop()
+    return "\n".join(lines) + _EXTENDED_JSON
+
+
+def build_social_prompt(topic: str, tone_config: dict, industry: str) -> str:
+    label = INDUSTRY_LABELS.get(industry, industry)
+    tone_name = tone_config.get("name", "engaging")
+    return (
+        f"Write a {tone_name} Instagram caption and hashtags for: {topic}\n"
+        f"Industry: {label}\n\n"
+        "Return ONLY valid JSON:\n"
+        '{"social_caption": "standalone instagram caption in this tone, 1-3 engaging sentences, no hashtags", '
+        '"hashtags": ["#tag1","#tag2","#tag3","#tag4","#tag5","#tag6","#tag7",'
+        '"#tag8","#tag9","#tag10","#tag11","#tag12","#tag13"]}'
+    )
 
 
 def build_image_prompt(topic: str, style_config: dict, palette: dict, industry: str = "") -> str:

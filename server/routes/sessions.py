@@ -12,8 +12,8 @@ from PIL import Image
 from src.core import session_manager as sm
 from src.core.composition import compose_post
 from src.core.image_processor import generate_base_image
-from src.core.prompt_formatter import build_caption_prompt, build_image_prompt
-from src.core.text_generator import generate_caption
+from src.core.prompt_formatter import build_caption_prompt, build_image_prompt, build_social_prompt
+from src.core.text_generator import generate_caption, generate_social
 from src.utils.constants import SESSIONS_DIR, OUTPUT_DIR
 from src.utils.helpers import ensure_dir, sanitize_filename
 from src.utils.logger import get_logger
@@ -93,6 +93,7 @@ async def generate(
         caption_prompt = build_caption_prompt(topic, tone_cfg, industry)
         caption = generate_caption(caption_prompt, fallback)
         session["caption"] = caption
+        session["social_caption"] = caption.get("social_caption", "")
 
         # 3. Sync text layers with generated caption
         palette = cfg["color_palettes"].get(palette_id, {})
@@ -323,13 +324,74 @@ async def regen_caption(request: Request, sid: str):
     session["caption"] = caption
     session["topic"] = topic
     session["caption_tone"] = tone_id
+    session["social_caption"] = caption.get("social_caption", "")
     session["headline_layer"]["text"] = caption["headline"]
     session["body_layer"]["text"] = caption["body"]
     session["hashtag_layer"]["text"] = " ".join(caption["hashtags"])
 
     sm.save_session(session)
     _recompose(session, cfg, sid)
-    return {"ok": True, "caption": caption, "ts": int(time.time())}
+    return {"ok": True, "caption": caption, "social_caption": session["social_caption"], "ts": int(time.time())}
+
+
+# ── AJAX: regenerate social caption + hashtags ────────────────────────────────
+
+@router.post("/api/session/{sid}/regen-social")
+async def regen_social(request: Request, sid: str):
+    cfg = request.app.state.config
+    body = await request.json()
+    session = sm.get_session(sid)
+    if not session:
+        return {"error": "not found"}
+
+    tone_id = body.get("caption_tone", session["caption_tone"])
+    tone_cfg = cfg["caption_tones"].get(tone_id, {})
+    fallback = {
+        "social_caption": session.get("social_caption", "Your story starts here."),
+        "hashtags": session.get("caption", {}).get("hashtags", ["#PostForge"]),
+    }
+    prompt = build_social_prompt(session["topic"], tone_cfg, session["industry"])
+    result = generate_social(prompt, fallback)
+
+    session["social_caption"] = result["social_caption"]
+    session["caption"]["hashtags"] = result["hashtags"]
+    sm.save_session(session)
+    return {"ok": True, "social_caption": result["social_caption"],
+            "hashtags": result["hashtags"], "ts": int(time.time())}
+
+
+# ── AJAX: font family ─────────────────────────────────────────────────────────
+
+@router.post("/api/session/{sid}/fontfamily")
+async def change_font_family(request: Request, sid: str):
+    cfg = request.app.state.config
+    body = await request.json()
+    layer_key = body.get("layer")   # "headline" | "body" | "hashtag"
+    font_style_id = body.get("font_style_id", "")
+
+    session = sm.get_session(sid)
+    if not session:
+        return {"error": "not found"}
+
+    font_cfg = cfg["font_styles"].get(font_style_id, {})
+    if not font_cfg:
+        return {"error": "unknown font style"}
+
+    # Headline role uses the bold/headline file; body and hashtag use the body file
+    if layer_key == "headline":
+        font_file = font_cfg.get("headline_file") or font_cfg.get("fallback_headline", "arial.ttf")
+    else:
+        font_file = font_cfg.get("body_file") or font_cfg.get("fallback_body", "arial.ttf")
+
+    layer_name = f"{layer_key}_layer"
+    layer = session.get(layer_name, {})
+    layer["font_file"] = font_file
+    layer["font_style_id"] = font_style_id
+    session[layer_name] = layer
+
+    sm.save_session(session)
+    _recompose(session, cfg, sid)
+    return {"ok": True, "font_file": font_file, "ts": int(time.time())}
 
 
 # ── Export ────────────────────────────────────────────────────────────────────

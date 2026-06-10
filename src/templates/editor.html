@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}PostForge Editor — {{ session.topic }}{% endblock %}
+{% block title %}PostForge — {{ session.topic }}{% endblock %}
 
 {% block content %}
 <div class="editor-page" data-sid="{{ session.session_id }}">
@@ -7,13 +7,14 @@
   <!-- Top bar -->
   <div class="editor-topbar">
     <div class="editor-breadcrumb">
-      <a href="/">← New Post</a>
-      <span>/ {{ session.topic | truncate(40) }}</span>
+      <a href="/">← New post</a>
+      <span>/</span>
+      <span>{{ session.topic | truncate(44) }}</span>
     </div>
     <div class="editor-actions">
-      <button class="btn btn-sm" id="regenImageBtn">🎨 Regen Image</button>
-      <a class="btn btn-primary" href="/api/session/{{ session.session_id }}/export" download>
-        ⬇️ Download PNG
+      <button class="btn btn-secondary btn-sm" id="regenImageBtn">Regenerate image</button>
+      <a class="btn btn-primary btn-sm" href="/api/session/{{ session.session_id }}/export" download>
+        Download PNG
       </a>
     </div>
   </div>
@@ -27,8 +28,8 @@
       <!-- Caption section -->
       <div class="ctrl-section">
         <div class="ctrl-section-header">
-          <h3>📝 Caption</h3>
-          <button class="btn btn-xs" id="regenCaptionBtn" title="Regenerate caption">↻ Regen</button>
+          <h3>Caption</h3>
+          <button class="btn btn-xs btn-secondary" id="regenCaptionBtn" title="Regenerate caption">Regenerate</button>
         </div>
 
         <!-- Headline -->
@@ -45,22 +46,16 @@
             data-layer="body">{{ session.body_layer.text }}</textarea>
         </div>
 
-        <!-- Hashtags -->
-        <div class="text-ctrl-group" data-layer="hashtag">
-          <label class="ctrl-label">Hashtags</label>
-          <textarea class="ctrl-textarea" id="hashtagText" rows="2"
-            data-layer="hashtag">{{ session.hashtag_layer.text }}</textarea>
-        </div>
       </div>
 
       <!-- Text layer controls -->
       <div class="ctrl-section">
-        <h3>✏️ Text Controls</h3>
+        <h3>Text controls</h3>
 
         <div class="layer-tabs">
           <button class="layer-tab active" data-layer="headline">Headline</button>
           <button class="layer-tab" data-layer="body">Body</button>
-          <button class="layer-tab" data-layer="hashtag">Hashtags</button>
+          <button class="layer-tab" data-layer="hashtag">Tags</button>
         </div>
 
         <div class="ctrl-block">
@@ -69,20 +64,20 @@
             <button class="dpad-btn" data-action="move" data-layer="headline" data-dx="0" data-dy="-10">▲</button>
             <div class="dpad-mid">
               <button class="dpad-btn" data-action="move" data-layer="headline" data-dx="-10" data-dy="0">◀</button>
-              <span class="dpad-center">✛</span>
+              <span class="dpad-center">·</span>
               <button class="dpad-btn" data-action="move" data-layer="headline" data-dx="10" data-dy="0">▶</button>
             </div>
             <button class="dpad-btn" data-action="move" data-layer="headline" data-dx="0" data-dy="10">▼</button>
           </div>
 
-          <label class="ctrl-label mt">Font Size</label>
+          <label class="ctrl-label mt">Font size</label>
           <div class="size-ctrl">
             <button class="btn btn-xs" data-action="fontsize" data-layer="headline" data-delta="-2">−</button>
             <span class="size-display" id="headline-fontsize">{{ session.headline_layer.font_size }}</span>
             <button class="btn btn-xs" data-action="fontsize" data-layer="headline" data-delta="2">+</button>
           </div>
 
-          <label class="ctrl-label mt">Text Color</label>
+          <label class="ctrl-label mt">Color</label>
           <div class="color-picker-row">
             {% set pal_colors = [palette.primary, palette.secondary, palette.accent, palette.text_primary, palette.text_secondary, "#FFFFFF", "#000000", "#FFDD00", "#FF4444"] %}
             {% for c in pal_colors %}
@@ -92,26 +87,34 @@
             <input type="color" class="custom-color-input" data-layer="headline" title="Custom color" />
           </div>
 
+          <label class="ctrl-label mt">Font family</label>
+          <div class="font-picker-row">
+            {% for key, fnt in font_styles.items() %}
+            <button class="font-pill" data-action="fontfamily" data-layer="headline"
+                    data-font-style="{{ key }}" title="{{ fnt.name }}">{{ fnt.name }}</button>
+            {% endfor %}
+          </div>
+
           <label class="ctrl-label mt">Visibility</label>
-          <button class="btn btn-xs toggle-vis" data-action="toggle" data-layer="headline">
-            👁 Toggle
+          <button class="btn btn-xs btn-secondary toggle-vis" data-action="toggle" data-layer="headline">
+            Toggle
           </button>
         </div>
       </div>
 
       <!-- Asset controls -->
       <div class="ctrl-section">
-        <h3>🗂️ Assets</h3>
+        <h3>Assets</h3>
 
         <div class="asset-ctrl-row">
           <div class="asset-ctrl-block" data-asset="logo">
             <div class="asset-ctrl-header">
-              <span>🏷️ Logo</span>
-              <label class="btn btn-xs upload-inline">
+              <span>Logo</span>
+              <label class="btn btn-xs btn-secondary upload-inline">
                 Upload <input type="file" class="asset-file-input" data-type="logo" accept="image/*" hidden />
               </label>
               {% if session.has_logo %}
-              <button class="btn btn-xs btn-danger" data-action="remove-asset" data-type="logo">✕</button>
+              <button class="btn btn-xs btn-danger" data-action="remove-asset" data-type="logo">Remove</button>
               {% endif %}
             </div>
             {% if session.has_logo %}
@@ -119,15 +122,10 @@
               <button class="dpad-btn" data-action="move" data-layer="logo" data-dx="0" data-dy="-10">▲</button>
               <div class="dpad-mid">
                 <button class="dpad-btn" data-action="move" data-layer="logo" data-dx="-10" data-dy="0">◀</button>
-                <span class="dpad-center">✛</span>
+                <span class="dpad-center">·</span>
                 <button class="dpad-btn" data-action="move" data-layer="logo" data-dx="10" data-dy="0">▶</button>
               </div>
               <button class="dpad-btn" data-action="move" data-layer="logo" data-dx="0" data-dy="10">▼</button>
-            </div>
-            <div class="size-ctrl">
-              <button class="btn btn-xs" data-action="assetsize" data-layer="logo" data-dw="-10" data-dh="-10">−</button>
-              <span>Size</span>
-              <button class="btn btn-xs" data-action="assetsize" data-layer="logo" data-dw="10" data-dh="10">+</button>
             </div>
             {% else %}
             <p class="no-asset-hint">No logo uploaded</p>
@@ -138,12 +136,12 @@
         <div class="asset-ctrl-row">
           <div class="asset-ctrl-block" data-asset="header">
             <div class="asset-ctrl-header">
-              <span>🎯 Header</span>
-              <label class="btn btn-xs upload-inline">
+              <span>Header</span>
+              <label class="btn btn-xs btn-secondary upload-inline">
                 Upload <input type="file" class="asset-file-input" data-type="header" accept="image/*" hidden />
               </label>
               {% if session.has_header %}
-              <button class="btn btn-xs btn-danger" data-action="remove-asset" data-type="header">✕</button>
+              <button class="btn btn-xs btn-danger" data-action="remove-asset" data-type="header">Remove</button>
               {% endif %}
             </div>
             {% if session.has_header %}
@@ -151,7 +149,7 @@
               <button class="dpad-btn" data-action="move" data-layer="header" data-dx="0" data-dy="-10">▲</button>
               <div class="dpad-mid">
                 <button class="dpad-btn" data-action="move" data-layer="header" data-dx="-10" data-dy="0">◀</button>
-                <span class="dpad-center">✛</span>
+                <span class="dpad-center">·</span>
                 <button class="dpad-btn" data-action="move" data-layer="header" data-dx="10" data-dy="0">▶</button>
               </div>
               <button class="dpad-btn" data-action="move" data-layer="header" data-dx="0" data-dy="10">▼</button>
@@ -165,12 +163,12 @@
         <div class="asset-ctrl-row">
           <div class="asset-ctrl-block" data-asset="footer">
             <div class="asset-ctrl-header">
-              <span>📌 Footer</span>
-              <label class="btn btn-xs upload-inline">
+              <span>Footer</span>
+              <label class="btn btn-xs btn-secondary upload-inline">
                 Upload <input type="file" class="asset-file-input" data-type="footer" accept="image/*" hidden />
               </label>
               {% if session.has_footer %}
-              <button class="btn btn-xs btn-danger" data-action="remove-asset" data-type="footer">✕</button>
+              <button class="btn btn-xs btn-danger" data-action="remove-asset" data-type="footer">Remove</button>
               {% endif %}
             </div>
             {% if session.has_footer %}
@@ -178,7 +176,7 @@
               <button class="dpad-btn" data-action="move" data-layer="footer" data-dx="0" data-dy="-10">▲</button>
               <div class="dpad-mid">
                 <button class="dpad-btn" data-action="move" data-layer="footer" data-dx="-10" data-dy="0">◀</button>
-                <span class="dpad-center">✛</span>
+                <span class="dpad-center">·</span>
                 <button class="dpad-btn" data-action="move" data-layer="footer" data-dx="10" data-dy="0">▶</button>
               </div>
               <button class="dpad-btn" data-action="move" data-layer="footer" data-dx="0" data-dy="10">▼</button>
@@ -192,12 +190,12 @@
         <!-- Custom Background -->
         <div class="asset-ctrl-block">
           <div class="asset-ctrl-header">
-            <span>🖼️ Background</span>
-            <label class="btn btn-xs upload-inline">
+            <span>Background</span>
+            <label class="btn btn-xs btn-secondary upload-inline">
               Upload <input type="file" class="asset-file-input" data-type="background" accept="image/*" hidden />
             </label>
             {% if session.has_custom_bg %}
-            <button class="btn btn-xs btn-danger" data-action="remove-asset" data-type="background">✕</button>
+            <button class="btn btn-xs btn-danger" data-action="remove-asset" data-type="background">Remove</button>
             {% endif %}
           </div>
           <p class="no-asset-hint">{{ "Custom background active" if session.has_custom_bg else "Using AI / gradient background" }}</p>
@@ -206,9 +204,9 @@
 
       <!-- Regen controls -->
       <div class="ctrl-section">
-        <h3>🔄 Regenerate</h3>
+        <h3>Regenerate</h3>
         <div class="form-group">
-          <label class="ctrl-label">Caption Tone</label>
+          <label class="ctrl-label">Caption tone</label>
           <select class="form-select" id="regenToneSelect">
             {% for key, tone in caption_tones.items() %}
             <option value="{{ key }}" {{ "selected" if key == session.caption_tone else "" }}>
@@ -217,10 +215,10 @@
             {% endfor %}
           </select>
         </div>
-        <button class="btn btn-secondary w-full" id="regenCaptionBtn2">↻ Regen Caption</button>
+        <button class="btn btn-secondary w-full" id="regenCaptionBtn2">New caption</button>
 
         <div class="form-group mt">
-          <label class="ctrl-label">Image Style</label>
+          <label class="ctrl-label">Image style</label>
           <select class="form-select" id="regenStyleSelect">
             {% for key, style in image_styles.items() %}
             <option value="{{ key }}" {{ "selected" if key == session.image_style else "" }}>
@@ -230,18 +228,18 @@
           </select>
         </div>
 
-        <label class="ctrl-label mt">Image Quality</label>
+        <label class="ctrl-label mt">Image quality</label>
         <div class="tier-mini-grid">
           <button type="button" class="tier-mini-btn {{ 'active' if session.get('image_tier','normal') == 'normal' else '' }}"
-                  data-tier="normal">⚡ Normal</button>
+                  data-tier="normal">Normal</button>
           <button type="button" class="tier-mini-btn {{ 'active' if session.get('image_tier','normal') == 'pro' else '' }}"
-                  data-tier="pro">✦ Pro</button>
+                  data-tier="pro">Pro</button>
           <button type="button" class="tier-mini-btn {{ 'active' if session.get('image_tier','normal') == 'max' else '' }}"
-                  data-tier="max">★ Max</button>
+                  data-tier="max">Max</button>
         </div>
         <input type="hidden" id="selectedImageTier" value="{{ session.get('image_tier', 'normal') }}" />
 
-        <button class="btn btn-secondary w-full" id="regenImageBtn2">🎨 Regen Image</button>
+        <button class="btn btn-secondary w-full" id="regenImageBtn2">New image</button>
       </div>
 
     </aside>
@@ -261,6 +259,32 @@
         <span>1080 × 1350 px</span>
         <span id="lastUpdated">Ready</span>
       </div>
+
+      <!-- Social copy panel -->
+      <div class="caption-copy-panel">
+        <div class="caption-copy-group">
+          <div class="caption-copy-header">
+            <span class="caption-copy-label">Instagram caption</span>
+            <div class="copy-panel-actions">
+              <button class="copy-btn copy-btn-regen" id="regenSocialCaptionBtn">Regen</button>
+              <button class="copy-btn" id="copyCaptionBtn">Copy</button>
+            </div>
+          </div>
+          <div class="caption-copy-text" id="captionCopyText">{{ session.social_caption | default("") }}</div>
+        </div>
+
+        <div class="caption-copy-group">
+          <div class="caption-copy-header">
+            <span class="caption-copy-label">Hashtags</span>
+            <div class="copy-panel-actions">
+              <button class="copy-btn copy-btn-regen" id="regenSocialHashtagsBtn">Regen</button>
+              <button class="copy-btn" id="copyHashtagsBtn">Copy</button>
+            </div>
+          </div>
+          <div class="caption-copy-text" id="hashtagsCopyText">{{ session.caption.hashtags | default([]) | join(" ") }}</div>
+        </div>
+      </div>
+
     </div>
 
   </div><!-- /editor-layout -->
@@ -273,6 +297,13 @@ const SID = "{{ session.session_id }}";
 let activeLayer = "headline";
 let debounceTimer = null;
 
+// Per-layer active font style id (initialised from session data)
+const LAYER_FONTS = {
+  headline: "{{ session.headline_layer.get('font_style_id', session.font_style) }}",
+  body:     "{{ session.body_layer.get('font_style_id', session.font_style) }}",
+  hashtag:  "{{ session.hashtag_layer.get('font_style_id', session.font_style) }}",
+};
+
 // ── Layer tab switching ────────────────────────────────────────────────────
 document.querySelectorAll(".layer-tab").forEach(tab => {
   tab.addEventListener("click", () => {
@@ -280,24 +311,26 @@ document.querySelectorAll(".layer-tab").forEach(tab => {
     tab.classList.add("active");
     activeLayer = tab.dataset.layer;
     updateDpadLayer(activeLayer);
+    updateFontPillsForLayer(activeLayer);
   });
 });
 
 function updateDpadLayer(layer) {
-  document.querySelectorAll("[data-action='move']").forEach(btn => {
-    if (btn.closest(".ctrl-block")) btn.dataset.layer = layer;
-  });
-  document.querySelectorAll("[data-action='fontsize']").forEach(btn => {
-    if (btn.closest(".ctrl-block")) btn.dataset.layer = layer;
-  });
-  document.querySelectorAll("[data-action='color']").forEach(btn => {
-    if (btn.closest(".ctrl-block")) btn.dataset.layer = layer;
+  const ACTIONS = ["move", "fontsize", "color", "toggle", "fontfamily"];
+  ACTIONS.forEach(action => {
+    document.querySelectorAll(`[data-action='${action}']`).forEach(btn => {
+      if (btn.closest(".ctrl-block")) btn.dataset.layer = layer;
+    });
   });
   document.querySelectorAll(".custom-color-input").forEach(inp => {
     if (inp.closest(".ctrl-block")) inp.dataset.layer = layer;
   });
-  document.querySelectorAll("[data-action='toggle']").forEach(btn => {
-    if (btn.closest(".ctrl-block")) btn.dataset.layer = layer;
+}
+
+function updateFontPillsForLayer(layer) {
+  const active = LAYER_FONTS[layer] || "";
+  document.querySelectorAll(".font-pill").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.fontStyle === active);
   });
 }
 
@@ -363,6 +396,14 @@ document.addEventListener("click", async (e) => {
     const dh = parseInt(btn.dataset.dh || 0);
     await api(`/api/session/${SID}/assetsize`, { layer, dw, dh });
   }
+  if (action === "fontfamily") {
+    const fontStyleId = btn.dataset.fontStyle;
+    const res = await api(`/api/session/${SID}/fontfamily`, { layer, font_style_id: fontStyleId });
+    if (res?.ok) {
+      LAYER_FONTS[layer] = fontStyleId;
+      updateFontPillsForLayer(layer);
+    }
+  }
   if (action === "remove-asset") {
     if (!confirm(`Remove ${btn.dataset.type}?`)) return;
     await fetch(`/api/session/${SID}/upload/${btn.dataset.type}`, { method: "DELETE" });
@@ -377,8 +418,56 @@ document.querySelectorAll(".custom-color-input").forEach(inp => {
   });
 });
 
+// ── Social copy panel ──────────────────────────────────────────────────────
+let currentSocialCaption = {{ session.social_caption | default("") | tojson }};
+let currentHashtags = {{ session.caption.hashtags | default([]) | tojson }};
+
+function updateCopyPanel(social, hashtags) {
+  const captionEl = document.getElementById("captionCopyText");
+  const hashtagEl = document.getElementById("hashtagsCopyText");
+  if (captionEl) captionEl.textContent = social || "";
+  if (hashtagEl) hashtagEl.textContent = Array.isArray(hashtags) ? hashtags.join(" ") : (hashtags || "");
+}
+
+async function copyText(text, btn) {
+  try {
+    await navigator.clipboard.writeText(text);
+    const orig = btn.textContent;
+    btn.textContent = "Copied!";
+    setTimeout(() => { btn.textContent = orig; }, 1600);
+  } catch(e) { console.error("Copy failed:", e); }
+}
+
+document.getElementById("copyCaptionBtn")?.addEventListener("click", (e) => {
+  copyText(document.getElementById("captionCopyText").textContent, e.currentTarget);
+});
+document.getElementById("copyHashtagsBtn")?.addEventListener("click", (e) => {
+  copyText(document.getElementById("hashtagsCopyText").textContent, e.currentTarget);
+});
+
+async function regenSocial() {
+  const tone = document.getElementById("regenToneSelect").value;
+  showLoading();
+  try {
+    const r = await fetch(`/api/session/${SID}/regen-social`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ caption_tone: tone }),
+    });
+    const data = await r.json();
+    if (data.ok) {
+      currentSocialCaption = data.social_caption;
+      currentHashtags = data.hashtags;
+      updateCopyPanel(currentSocialCaption, currentHashtags);
+    }
+  } catch(e) { console.error(e); }
+  finally { hideLoading(); }
+}
+document.getElementById("regenSocialCaptionBtn")?.addEventListener("click", regenSocial);
+document.getElementById("regenSocialHashtagsBtn")?.addEventListener("click", regenSocial);
+
 // ── Text textarea debounce ─────────────────────────────────────────────────
-["headline","body","hashtag"].forEach(layer => {
+["headline","body"].forEach(layer => {
   const el = document.getElementById(`${layer}Text`);
   if (!el) return;
   el.addEventListener("input", () => {
@@ -396,7 +485,9 @@ async function regenCaption() {
   if (res?.caption) {
     document.getElementById("headlineText").value = res.caption.headline;
     document.getElementById("bodyText").value = res.caption.body;
-    document.getElementById("hashtagText").value = res.caption.hashtags.join(" ");
+    if (res.social_caption !== undefined) currentSocialCaption = res.social_caption;
+    if (res.caption.hashtags) currentHashtags = res.caption.hashtags;
+    updateCopyPanel(currentSocialCaption, currentHashtags);
   }
 }
 document.getElementById("regenCaptionBtn")?.addEventListener("click", regenCaption);
@@ -446,7 +537,9 @@ document.querySelectorAll(".asset-file-input").forEach(input => {
   });
 });
 
-// ── Init: set correct dpad layer ──────────────────────────────────────────
+// ── Init ──────────────────────────────────────────────────────────────────
 updateDpadLayer(activeLayer);
+updateFontPillsForLayer(activeLayer);
+updateCopyPanel(currentSocialCaption, currentHashtags);
 </script>
 {% endblock %}

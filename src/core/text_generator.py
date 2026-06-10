@@ -65,7 +65,38 @@ def generate_caption(prompt: str, fallback: dict) -> dict:
 def _validate_caption(data: dict, fallback: dict) -> dict:
     headline = str(data.get("headline", fallback.get("headline", "")))[:60]
     body = str(data.get("body", fallback.get("body", "")))[:200]
+    social = str(data.get("social_caption", fallback.get("social_caption", "")))[:600]
     hashtags = data.get("hashtags", fallback.get("hashtags", []))
     if not isinstance(hashtags, list):
         hashtags = fallback.get("hashtags", [])
-    return {"headline": headline, "body": body, "hashtags": [str(h) for h in hashtags[:7]]}
+    return {
+        "headline": headline,
+        "body": body,
+        "social_caption": social,
+        "hashtags": [str(h) for h in hashtags[:15]],
+    }
+
+
+def generate_social(prompt: str, fallback: dict) -> dict:
+    """Regenerate only social_caption + hashtags (no image parts)."""
+    client = _client()
+    if not client:
+        return fallback
+    model = os.getenv("OPENROUTER_TEXT_MODEL") or "deepseek/deepseek-chat"
+    try:
+        response = client.chat.completions.create(
+            model=model,
+            max_tokens=500,
+            messages=[{"role": "user", "content": prompt}],
+            extra_headers=_HEADERS,
+        )
+        raw = response.choices[0].message.content or ""
+        data = _parse_json_from_text(raw)
+        social = str(data.get("social_caption", fallback.get("social_caption", "")))[:600]
+        hashtags = data.get("hashtags", fallback.get("hashtags", []))
+        if not isinstance(hashtags, list):
+            hashtags = fallback.get("hashtags", [])
+        return {"social_caption": social, "hashtags": [str(h) for h in hashtags[:15]]}
+    except Exception as exc:
+        log.error("Social gen error (%s): %s", model, exc)
+        return fallback
