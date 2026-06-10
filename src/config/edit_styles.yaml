@@ -1,0 +1,238 @@
+edit_styles:
+
+  # ── Commercial / Brand layouts (from sample analysis) ───────────────────────
+
+  cinematic_overlay:
+    id: cinematic_overlay
+    name: "Cinematic Overlay"
+    category: commercial
+    description: "Gradient darkens upper zone, bold white headline in the middle band"
+    mood: "Cinematic, Dramatic, Premium"
+    # Layout
+    layout: full_bleed
+    # Overlay — dark gradient that covers the middle band where text lives
+    overlay_type: gradient_top
+    overlay_color: "#000000"
+    overlay_gradient_opacity: 0.72
+    # Text zone — middle of canvas (35-58%), left-aligned
+    text_zone: middle
+    text_align: left
+    # Typography
+    headline_default_size: 78
+    body_default_size: 34
+    headline_line_gap: 7
+    body_line_gap: 13
+    side_padding: 76
+    text_color_mode: white
+    # Logo
+    logo_pos: top_right
+    logo_padding: 46
+    logo_max: [180, 100]
+    # Extras
+    accent_rule: false
+    contact_bar_default: true
+
+  editorial_clean:
+    id: editorial_clean
+    name: "Editorial Clean"
+    category: commercial
+    description: "Minimal overlay, dominant dark headline top-left — based on More Than Insurance"
+    mood: "Professional, Bold, Editorial"
+    layout: full_bleed
+    # Very light overlay — the bright photo carries itself
+    overlay_type: solid
+    overlay_color: "#FFFFFF"
+    overlay_opacity: 0.08
+    # Text sits in top zone, left-aligned, LARGE
+    text_zone: top
+    text_align: left
+    headline_default_size: 92
+    body_default_size: 30
+    headline_line_gap: 5
+    body_line_gap: 14
+    side_padding: 70
+    # Dark text for light photos
+    text_color_mode: dark
+    # Logo
+    logo_pos: top_right
+    logo_padding: 44
+    logo_max: [170, 95]
+    # Accent rule line between headline and body
+    accent_rule: true
+    accent_rule_length: 200
+    accent_rule_thickness: 5
+    accent_gap_above: 20
+    accent_gap_below: 22
+    contact_bar_default: true
+
+  drama_impact:
+    id: drama_impact
+    name: "Drama Impact"
+    category: commercial
+    description: "Heavy overlay, urgent left-aligned white headline in upper zone"
+    mood: "Urgent, Powerful, High-contrast"
+    layout: full_bleed
+    overlay_type: solid
+    overlay_color: "#000000"
+    overlay_opacity: 0.50
+    text_zone: top
+    text_align: left
+    headline_default_size: 78
+    body_default_size: 30
+    headline_line_gap: 6
+    body_line_gap: 12
+    side_padding: 70
+    text_color_mode: white
+    logo_pos: top_right
+    logo_padding: 44
+    logo_max: [170, 95]
+    accent_rule: false
+    contact_bar_default: true
+
+  celebration_card:
+    id: celebration_card
+    name: "Celebration Card"
+    category: commercial
+    description: "Clean background, centered script + bold title for events and holidays"
+    mood: "Celebratory, Warm, Festive"
+    layout: full_bleed
+    overlay_type: none
+    overlay_opacity: 0.0
+    text_zone: top
+    text_align: center
+    headline_default_size: 88
+    body_default_size: 32
+    headline_line_gap: 10
+    body_line_gap: 14
+    side_padding: 80
+    # Dark text on clean/light backgrounds
+    text_color_mode: dark
+    logo_pos: top_right
+    logo_padding: 44
+    logo_max: [170, 95]
+    accent_rule: false
+    contact_bar_default: true
+
+  # ── General purpose layouts ───────────────────────────────────────────────────
+
+  minimal_center:
+    id: minimal_center
+    name: "Minimal Center"
+    category: general
+    description: "Clean centered layout, balanced for announcements and quotes"
+    mood: "Clean, Modern, Professional"
+    layout: full_bleed
+    overlay_type: solid
+    overlay_color: "#000000"
+    overlay_opacity: 0.30
+    text_zone: center
+    text_align: center
+    headline_default_size: 72
+    body_default_size: 30
+    headline_line_gap: 8
+    body_line_gap: 14
+    side_padding: 80
+    text_color_mode: white
+    logo_pos: top_right
+    logo_padding: 44
+    logo_max: [160, 90]
+    accent_rule: false
+    contact_bar_default: false
+
+  bold_impact:
+    id: bold_impact
+    name: "Bold Impact"
+    category: general
+    description: "Heavy overlay, very large centered headline, maximum visual weight"
+    mood: "Bold, Direct, Powerful"
+    layout: full_bleed
+    overlay_type: solid
+    overlay_color: "#000000"
+    overlay_opacity: 0.55
+    text_zone: center
+    text_align: center
+    headline_default_size: 96
+    body_default_size: 28
+    headline_line_gap: 4
+    body_line_gap: 14
+    side_padding: 72
+    text_color_mode: white
+    logo_pos: top_right
+    logo_padding: 44
+    logo_max: [160, 90]
+    accent_rule: false
+    contact_bar_default: false
+
+  # ── Split layouts (retain existing split composition) ─────────────────────────
+
+  split_editorial:
+    id: split_editorial
+    name: "Split Editorial"
+    category: split
+    description: "Solid color text zone on top, cinematic photo on the bottom"
+    mood: "Editorial, Bold, Professional"
+    layout: split
+    photo_split: 0.42
+    overlay_type: none
+    overlay_opacity: 0.0
+    # Split layout uses its own internal rendering — these are ignored
+    headline_default_size: 72
+    body_default_size: 36
+    side_padding: 64
+    text_color_mode: white
+    logo_pos: top_right
+    logo_padding: 44
+    logo_max: [150, 85]
+    accent_rule: false
+    contact_bar_default: false
+
+  split_luxury:
+    id: split_luxury
+    name: "Split Luxury Dark"
+    category: split
+    description: "Rich dark text zone on top, moody luxury photo on the bottom"
+    mood: "Luxurious, Sophisticated, Premium"
+    layout: split
+    photo_split: 0.40
+    overlay_type: none
+    overlay_opacity: 0.0
+    headline_default_size: 72
+    body_default_size: 36
+    side_padding: 64
+    text_color_mode: white
+    logo_pos: top_right
+    logo_padding: 44
+    logo_max: [150, 85]
+    accent_rule: false
+    contact_bar_default: false
+
+  split_warm:
+    id: split_warm
+    name: "Split Vibrant Warm"
+    category: split
+    description: "Warm-toned text zone on top, vibrant lifestyle photo on the bottom"
+    mood: "Warm, Energetic, Lifestyle"
+    layout: split
+    photo_split: 0.44
+    overlay_type: none
+    overlay_opacity: 0.0
+    headline_default_size: 72
+    body_default_size: 36
+    side_padding: 64
+    text_color_mode: white
+    logo_pos: top_right
+    logo_padding: 44
+    logo_max: [150, 85]
+    accent_rule: false
+    contact_bar_default: false
+
+edit_style_categories:
+  commercial:
+    label: "Commercial & Brand"
+    description: "Professional brand layouts based on real commercial Instagram posts"
+  general:
+    label: "General Purpose"
+    description: "Versatile layouts for any content type"
+  split:
+    label: "Split Layout"
+    description: "Two-zone layouts with solid color top and photo bottom"

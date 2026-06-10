@@ -75,7 +75,33 @@ _EXTENDED_JSON = (
 )
 
 
-def build_caption_prompt(topic: str, tone_config: dict, industry: str) -> str:
+def build_brand_analysis_prompt(
+    description: str,
+    topic: str,
+    industries: list,
+    image_types: list,
+    edit_styles: list,
+    caption_tones: list,
+    palettes: list,
+    font_styles: list,
+) -> str:
+    topic_line = f"\nPost topic: {topic}" if topic.strip() else ""
+    return (
+        f"Analyze this brand/product and choose the best Instagram post settings.\n\n"
+        f"Brand description: {description}{topic_line}\n\n"
+        f"Pick exactly one value from each list below:\n"
+        f"industry: {', '.join(industries)}\n"
+        f"image_type: {', '.join(image_types)}\n"
+        f"edit_style: {', '.join(edit_styles)}\n"
+        f"caption_tone: {', '.join(caption_tones)}\n"
+        f"palette_id: {', '.join(palettes)}\n"
+        f"font_style: {', '.join(font_styles)}\n\n"
+        f"Return ONLY valid JSON:\n"
+        f'{{"industry":"...","image_type":"...","edit_style":"...","caption_tone":"...","palette_id":"...","font_style":"..."}}'
+    )
+
+
+def build_caption_prompt(topic: str, tone_config: dict, industry: str, brand_context: str = "") -> str:
     label = INDUSTRY_LABELS.get(industry, industry)
     template = tone_config.get("llm_prompt", "")
     base = template.format(topic=topic, industry=label)
@@ -89,7 +115,8 @@ def build_caption_prompt(topic: str, tone_config: dict, industry: str) -> str:
         lines.pop()
     if lines and "Return ONLY valid JSON" in lines[-1]:
         lines.pop()
-    return "\n".join(lines) + _EXTENDED_JSON
+    brand_part = f"Brand context: {brand_context.strip()}\n\n" if brand_context.strip() else ""
+    return brand_part + "\n".join(lines) + _EXTENDED_JSON
 
 
 def build_social_prompt(topic: str, tone_config: dict, industry: str) -> str:
@@ -105,24 +132,35 @@ def build_social_prompt(topic: str, tone_config: dict, industry: str) -> str:
     )
 
 
-def build_image_prompt(topic: str, style_config: dict, palette: dict, industry: str = "") -> str:
-    scene = INDUSTRY_SCENE.get(industry, "professional lifestyle photography scene")
-    style_aesthetic = style_config.get("image_prompt", "")
+def build_image_prompt(topic: str, image_type_cfg: dict, palette: dict, industry: str = "") -> str:
+    """Build AI image generation prompt from image_type_cfg (new) or legacy style_config."""
+    scene           = INDUSTRY_SCENE.get(industry, "professional lifestyle photography scene")
+    base_prompt     = image_type_cfg.get("prompt", image_type_cfg.get("image_prompt", ""))
+    photo_direction = image_type_cfg.get("photo_direction", "")
+    use_palette     = image_type_cfg.get("use_palette", True)
 
-    if style_config.get("layout") == "split":
-        # Pure photographic scene — topic + industry context drives what's shown
+    # Split layouts still use the simple scene-only prompt
+    if image_type_cfg.get("layout") == "split":
         return (
             f"Photorealistic photograph about {topic}. "
             f"Show: {scene}. "
             f"Cinematic composition, ultra detailed, 8K, {_NO_TEXT}."
         )
 
-    primary = palette.get("primary", "#FFFFFF")
-    secondary = palette.get("secondary", "#000000")
+    direction_part = f"Photography direction: {photo_direction}. " if photo_direction else ""
+
+    if use_palette:
+        primary   = palette.get("primary",   "#FFFFFF")
+        secondary = palette.get("secondary", "#000000")
+        palette_part = f"Color palette featuring {primary} and {secondary}. "
+    else:
+        palette_part = ""
+
     return (
         f"Photorealistic image about {topic}. "
         f"Show: {scene}. "
-        f"Visual style: {style_aesthetic}. "
-        f"Color palette featuring {primary} and {secondary}. "
+        f"Visual style: {base_prompt}. "
+        f"{direction_part}"
+        f"{palette_part}"
         f"Instagram post format 4:5, high quality, professional, {_NO_TEXT}."
     )

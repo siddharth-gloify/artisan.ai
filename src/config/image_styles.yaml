@@ -357,6 +357,91 @@ image_styles:
     overlay_opacity: 0.0
     text_shadow: false
 
+  cinematic_hero:
+    id: cinematic_hero
+    name: "Cinematic Hero"
+    category: commercial
+    description: "Full-bleed photo with gradient fade from bottom, text anchored to lower third"
+    mood: "Cinematic, Dramatic, Premium"
+    best_for: [automotive, insurance, travel, business, lifestyle]
+    width: 1080
+    height: 1350
+    typography_style: sans_serif_bold
+    trending_2025: true
+    image_prompt: "Professional commercial photography, cinematic wide-angle composition, dramatic golden hour or blue-hour lighting, sharp subject against softly blurred background, rich depth of field, photorealistic, 8K quality"
+    photo_direction: "cinematic wide angle, dramatic golden hour lighting, shallow depth of field, commercial grade"
+    overlay_color: "#000000"
+    overlay_opacity: 0.0
+    overlay_type: "gradient_bottom"
+    overlay_gradient_opacity: 0.88
+    text_zone: "bottom"
+    text_align: "left"
+    text_shadow: true
+    accent_rule: false
+
+  editorial_topleft:
+    id: editorial_topleft
+    name: "Editorial Top-Left"
+    category: commercial
+    description: "Clean photo, large bold headline top-left, accent rule between headline and body"
+    mood: "Professional, Bold, Editorial"
+    best_for: [insurance, business, real_estate, corporate, lifestyle]
+    width: 1080
+    height: 1350
+    typography_style: sans_serif_bold
+    trending_2025: true
+    image_prompt: "Bright high-key lifestyle photography, clean well-lit indoor or outdoor environment, natural daylight, professional commercial photography, subjects in comfortable natural setting, editorial magazine quality"
+    photo_direction: "bright high-key lighting, natural daylight, clean environment, lifestyle editorial"
+    overlay_color: "#000000"
+    overlay_opacity: 0.18
+    overlay_type: "solid"
+    text_zone: "top"
+    text_align: "left"
+    text_shadow: false
+    accent_rule: true
+
+  drama_impact:
+    id: drama_impact
+    name: "Drama Impact"
+    category: commercial
+    description: "Dark dramatic photo, heavy overlay, urgent left-aligned headline in upper zone"
+    mood: "Urgent, Powerful, High-contrast"
+    best_for: [insurance, automotive, emergency_services, finance, security]
+    width: 1080
+    height: 1350
+    typography_style: sans_serif_bold
+    trending_2025: true
+    image_prompt: "Dark dramatic commercial photography, high contrast chiaroscuro lighting, subject dramatically lit against dark moody environment, intense cinematic atmosphere, professional photojournalism quality"
+    photo_direction: "dark dramatic, high contrast chiaroscuro, moody cinematic, intense atmosphere"
+    overlay_color: "#000000"
+    overlay_opacity: 0.45
+    overlay_type: "solid"
+    text_zone: "top"
+    text_align: "left"
+    text_shadow: true
+    accent_rule: false
+
+  celebration_soft:
+    id: celebration_soft
+    name: "Celebration Card"
+    category: commercial
+    description: "Soft gradient background, centered 3D illustration, script + display typography"
+    mood: "Celebratory, Warm, Festive"
+    best_for: [holiday_greetings, events, lifestyle, insurance, personal_brand]
+    width: 1080
+    height: 1350
+    typography_style: serif_elegant
+    trending_2025: true
+    image_prompt: "3D rendered festive illustration, vibrant celebratory scene, centered subject on soft gradient background, professional 3D art with smooth studio lighting, clean and joyful composition, no photography, pure digital illustration"
+    photo_direction: "3D illustration, festive celebratory, soft gradient background, centered composition"
+    overlay_color: "#000000"
+    overlay_opacity: 0.0
+    overlay_type: "none"
+    text_zone: "top"
+    text_align: "center"
+    text_shadow: false
+    accent_rule: false
+
 style_categories:
   clean:
     label: "Clean & Minimal"
@@ -394,3 +479,6 @@ style_categories:
   split:
     label: "Split Layout"
     description: "Solid-color text zone on top, real photo on the bottom"
+  commercial:
+    label: "Commercial & Brand"
+    description: "Professional brand posts, cinematic photo, editorial layouts"

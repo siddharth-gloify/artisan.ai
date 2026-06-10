@@ -21,7 +21,9 @@ def _session_file(session_id: str) -> Path:
 
 def create_session(industry: str, image_style: str, caption_tone: str,
                    palette_id: str, font_style: str, topic: str,
-                   image_tier: str = "normal") -> dict:
+                   image_tier: str = "normal",
+                   image_type: str = "",
+                   edit_style: str = "") -> dict:
     session_id = str(uuid.uuid4())[:8]
     session_dir = _session_dir(session_id)
     ensure_dir(session_dir)
@@ -33,17 +35,28 @@ def create_session(industry: str, image_style: str, caption_tone: str,
         "status": "pending",
         "image_tier": image_tier,
         "industry": industry,
-        "image_style": image_style,
+        "image_style": image_style,       # legacy combined field
+        "image_type": image_type or image_style,   # what AI generates
+        "edit_style": edit_style or image_style,   # how Pillow composes
         "caption_tone": caption_tone,
         "palette_id": palette_id,
         "font_style": font_style,
         "topic": topic,
+        "brand_description": "",
         "caption": {"headline": "", "body": "", "social_caption": "", "hashtags": []},
         "social_caption": "",
         "has_logo": False,
         "has_header": False,
         "has_footer": False,
         "has_custom_bg": False,
+        "contact_bar_layer": {
+            "enabled": False,
+            "phone": "",
+            "email": "",
+            "bg_color": "#1a2e55",
+            "text_color": "#FFFFFF",
+            "visible": True,
+        },
         "headline_layer": {
             "text": "",
             "x": POST_WIDTH // 2,

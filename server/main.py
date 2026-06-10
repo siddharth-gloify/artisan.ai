@@ -50,15 +50,24 @@ def _load_yaml(name: str) -> dict:
 
 
 def load_config() -> dict:
-    palettes_raw  = _load_yaml("color_palettes.yaml")
-    styles_raw    = _load_yaml("image_styles.yaml")
-    prompts_raw   = _load_yaml("prompts.yaml")
-    templates_raw = _load_yaml("templates.yaml")
+    palettes_raw    = _load_yaml("color_palettes.yaml")
+    styles_raw      = _load_yaml("image_styles.yaml")
+    prompts_raw     = _load_yaml("prompts.yaml")
+    templates_raw   = _load_yaml("templates.yaml")
+    img_types_raw   = _load_yaml("image_types.yaml")
+    edit_styles_raw = _load_yaml("edit_styles.yaml")
     return {
-        "color_palettes":        palettes_raw.get("palettes", {}),
-        "palette_categories":    palettes_raw.get("categories", {}),
+        # Legacy combined styles (kept for backward compat)
         "image_styles":          styles_raw.get("image_styles", {}),
         "style_categories":      styles_raw.get("style_categories", {}),
+        # New separated configs
+        "image_types":           img_types_raw.get("image_types", {}),
+        "image_type_categories": img_types_raw.get("image_type_categories", {}),
+        "edit_styles":           edit_styles_raw.get("edit_styles", {}),
+        "edit_style_categories": edit_styles_raw.get("edit_style_categories", {}),
+        # Palettes, fonts, copy
+        "color_palettes":        palettes_raw.get("palettes", {}),
+        "palette_categories":    palettes_raw.get("categories", {}),
         "caption_tones":         prompts_raw.get("caption_tones", {}),
         "fallback_caption":      prompts_raw.get("fallback_caption", {}),
         "industries":            templates_raw.get("industries", {}),
@@ -78,11 +87,13 @@ async def health():
     return {
         "status": "ok",
         "config": {
-            "palettes":   len(cfg["color_palettes"]),
-            "styles":     len(cfg["image_styles"]),
-            "tones":      len(cfg["caption_tones"]),
-            "industries": len(cfg["industries"]),
-            "fonts":      len(cfg["font_styles"]),
+            "palettes":     len(cfg["color_palettes"]),
+            "image_types":  len(cfg["image_types"]),
+            "edit_styles":  len(cfg["edit_styles"]),
+            "legacy_styles":len(cfg["image_styles"]),
+            "tones":        len(cfg["caption_tones"]),
+            "industries":   len(cfg["industries"]),
+            "fonts":        len(cfg["font_styles"]),
         },
         "keys": {
             "text_key":  bool(os.getenv("OPENROUTER_TEXT_KEY")),

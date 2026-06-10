@@ -26,10 +26,11 @@ async def regen_image(request: Request, sid: str):
     palette_id = body.get("palette_id", session["palette_id"])
     tier = body.get("image_tier", session.get("image_tier", "normal"))
 
-    style_cfg = cfg["image_styles"].get(style_id, {})
+    image_type_cfg = (cfg.get("image_types", {}).get(style_id) or
+                      cfg.get("image_styles", {}).get(style_id, {}))
     palette = cfg["color_palettes"].get(palette_id, {})
 
-    img_prompt = build_image_prompt(session["topic"], style_cfg, palette)
+    img_prompt = build_image_prompt(session["topic"], image_type_cfg, palette)
     base_path = SESSIONS_DIR / sid / "base_image.png"
 
     success = await generate_base_image(img_prompt, palette, base_path, tier=tier)

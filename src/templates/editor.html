@@ -202,6 +202,32 @@
         </div>
       </div>
 
+      <!-- Contact bar -->
+      <div class="ctrl-section">
+        <h3>Contact bar</h3>
+        <div class="contact-bar-toggle">
+          <label class="ctrl-label" style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+            <input type="checkbox" id="contactBarEnabled"
+              {{ "checked" if session.contact_bar_layer and session.contact_bar_layer.enabled else "" }}
+              style="width:14px;height:14px;cursor:pointer;" />
+            Show contact bar at bottom
+          </label>
+        </div>
+        <div class="form-group" style="margin-top:10px;">
+          <label class="ctrl-label">Phone</label>
+          <input class="ctrl-input" type="text" id="contactPhone"
+            value="{{ session.contact_bar_layer.phone if session.contact_bar_layer else '' }}"
+            placeholder="+1 234 567 890" />
+        </div>
+        <div class="form-group" style="margin-top:8px;">
+          <label class="ctrl-label">Email</label>
+          <input class="ctrl-input" type="text" id="contactEmail"
+            value="{{ session.contact_bar_layer.email if session.contact_bar_layer else '' }}"
+            placeholder="hello@yourbrand.com" />
+        </div>
+        <button class="btn btn-secondary w-full" id="applyContactBtn" style="margin-top:10px;">Apply</button>
+      </div>
+
       <!-- Regen controls -->
       <div class="ctrl-section">
         <h3>Regenerate</h3>
@@ -240,6 +266,18 @@
         <input type="hidden" id="selectedImageTier" value="{{ session.get('image_tier', 'normal') }}" />
 
         <button class="btn btn-secondary w-full" id="regenImageBtn2">New image</button>
+
+        <div class="form-group mt">
+          <label class="ctrl-label">Post layout</label>
+          <select class="form-select" id="layoutSelect">
+            {% for key, es in edit_styles.items() %}
+            <option value="{{ key }}" {{ "selected" if key == session.edit_style else "" }}>
+              {{ es.name }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+        <button class="btn btn-secondary w-full" id="applyLayoutBtn">Apply layout</button>
       </div>
 
     </aside>
@@ -535,6 +573,26 @@ document.querySelectorAll(".asset-file-input").forEach(input => {
       hideLoading();
     }
   });
+});
+
+// ── Apply post layout ─────────────────────────────────────────────────────
+document.getElementById("applyLayoutBtn")?.addEventListener("click", async () => {
+  const edit_style_id = document.getElementById("layoutSelect").value;
+  await api(`/api/session/${SID}/edit-style`, { edit_style_id });
+});
+
+// ── Contact bar ────────────────────────────────────────────────────────────
+document.getElementById("applyContactBtn")?.addEventListener("click", async () => {
+  const enabled = document.getElementById("contactBarEnabled").checked;
+  const phone   = document.getElementById("contactPhone").value.trim();
+  const email   = document.getElementById("contactEmail").value.trim();
+  await api(`/api/session/${SID}/contact`, { enabled, phone, email });
+});
+// Checking/unchecking the toggle also applies immediately
+document.getElementById("contactBarEnabled")?.addEventListener("change", async (e) => {
+  const phone = document.getElementById("contactPhone").value.trim();
+  const email = document.getElementById("contactEmail").value.trim();
+  await api(`/api/session/${SID}/contact`, { enabled: e.target.checked, phone, email });
 });
 
 // ── Init ──────────────────────────────────────────────────────────────────

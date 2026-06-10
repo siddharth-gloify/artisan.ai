@@ -12,8 +12,10 @@ from PIL import Image
 from src.core import session_manager as sm
 from src.core.composition import compose_post
 from src.core.image_processor import generate_base_image
-from src.core.prompt_formatter import build_caption_prompt, build_image_prompt, build_social_prompt
-from src.core.text_generator import generate_caption, generate_social
+from src.core.prompt_formatter import (
+    build_caption_prompt, build_image_prompt, build_social_prompt, build_brand_analysis_prompt,
+)
+from src.core.text_generator import generate_caption, generate_social, generate_brand_config
 from src.utils.constants import SESSIONS_DIR, OUTPUT_DIR
 from src.utils.helpers import ensure_dir, sanitize_filename
 from src.utils.logger import get_logger
@@ -31,8 +33,12 @@ async def home(request: Request):
     return templates.TemplateResponse("index.html", {
         "request": request,
         "industries": cfg["industries"],
-        "image_styles": cfg["image_styles"],
-        "style_categories": cfg["style_categories"],
+        "image_types": cfg.get("image_types", {}),
+        "image_type_categories": cfg.get("image_type_categories", {}),
+        "edit_styles": cfg.get("edit_styles", {}),
+        "edit_style_categories": cfg.get("edit_style_categories", {}),
+        "image_styles": cfg["image_styles"],          # legacy
+        "style_categories": cfg["style_categories"],  # legacy
         "caption_tones": cfg["caption_tones"],
         "palettes": cfg["color_palettes"],
         "palette_categories": cfg["palette_categories"],
@@ -46,13 +52,18 @@ async def home(request: Request):
 @router.post("/generate")
 async def generate(
     request: Request,
-    industry: str = Form(...),
-    image_style: str = Form(...),
+    industry: str = Form(""),            # optional — auto-filled from brand description
+    image_type: str = Form(""),          # optional — auto-filled from brand description
+    edit_style: str = Form(""),
+    image_style: str = Form(""),         # legacy compat
     caption_tone: str = Form(...),
-    palette_id: str = Form(...),
+    palette_id: str = Form(""),          # optional — auto-filled from brand description
     font_style: str = Form(...),
     topic: str = Form(...),
     image_tier: str = Form("normal"),
+    brand_description: str = Form(""),
+    contact_phone: str = Form(""),
+    contact_email: str = Form(""),
     logo_file: Optional[UploadFile] = File(None),
     header_file: Optional[UploadFile] = File(None),
     footer_file: Optional[UploadFile] = File(None),
@@ -61,18 +72,89 @@ async def generate(
     cfg = request.app.state.config
     ensure_dir(SESSIONS_DIR)
 
+    # Resolve IDs — new form sends image_type + edit_style; legacy sends image_style
+    resolved_image_type = image_type or image_style
+    resolved_edit_style = edit_style or image_style
+
+    # Auto-fill optional fields (industry, image_type, palette_id) when left blank
+    needs_fill = not industry or not resolved_image_type or not palette_id
+    if needs_fill:
+        _defaults = {
+            "industry":   "lifestyle",
+            "image_type": "photo_lifestyle",
+            "edit_style": resolved_edit_style,
+            "caption_tone": caption_tone,
+            "palette_id": "neutral_elegant",
+            "font_style": font_style,
+        }
+        if brand_description.strip():
+            _prompt = build_brand_analysis_prompt(
+                brand_description.strip(), topic,
+                industries    = list(cfg["industries"].keys()),
+                image_types   = list(cfg.get("image_types", {}).keys()),
+                edit_styles   = list(cfg.get("edit_styles", {}).keys()),
+                caption_tones = list(cfg["caption_tones"].keys()),
+                palettes      = list(cfg["color_palettes"].keys()),
+                font_styles   = list(cfg["font_styles"].keys()),
+            )
+            _filled = generate_brand_config(_prompt, _defaults)
+            _valid = {
+                "industry":   list(cfg["industries"].keys()),
+                "image_type": list(cfg.get("image_types", {}).keys()),
+                "palette_id": list(cfg["color_palettes"].keys()),
+            }
+            for k, v in _valid.items():
+                _filled[k] = _filled.get(k) if _filled.get(k) in v else _defaults[k]
+        else:
+            _filled = _defaults
+
+        if not industry:            industry            = _filled["industry"]
+        if not resolved_image_type: resolved_image_type = _filled["image_type"]
+        if not palette_id:          palette_id          = _filled["palette_id"]
+
     # 1. Create session
     session = sm.create_session(
         industry=industry,
-        image_style=image_style,
+        image_style=image_style or edit_style,   # legacy compat
         caption_tone=caption_tone,
         palette_id=palette_id,
         font_style=font_style,
         topic=topic,
         image_tier=image_tier,
+        image_type=resolved_image_type,
+        edit_style=resolved_edit_style,
     )
     sid = session["session_id"]
     session_dir = SESSIONS_DIR / sid
+
+    # Apply edit_style defaults: font sizes and text color mode
+    edit_cfg = cfg.get("edit_styles", {}).get(resolved_edit_style, {})
+    palette  = cfg["color_palettes"].get(palette_id, {})
+
+    if edit_cfg.get("headline_default_size"):
+        session["headline_layer"]["font_size"] = edit_cfg["headline_default_size"]
+    if edit_cfg.get("body_default_size"):
+        session["body_layer"]["font_size"] = edit_cfg["body_default_size"]
+
+    # Text colors: dark mode for editorial styles, white for cinematic/drama
+    text_color_mode = edit_cfg.get("text_color_mode", "white")
+    if text_color_mode == "dark":
+        session["headline_layer"]["color"] = palette.get("primary", "#1a2e55")
+        session["body_layer"]["color"]     = palette.get("secondary", "#4A5568")
+    else:
+        session["headline_layer"]["color"] = palette.get("text_primary", "#FFFFFF")
+        session["body_layer"]["color"]     = palette.get("text_secondary", "#CCCCCC")
+
+    # Store brand description
+    session["brand_description"] = brand_description.strip()
+
+    # Auto-enable contact bar if this edit style recommends it and phone/email provided
+    if contact_phone or contact_email:
+        session["contact_bar_layer"]["phone"]   = contact_phone
+        session["contact_bar_layer"]["email"]   = contact_email
+        session["contact_bar_layer"]["enabled"] = True
+    elif edit_cfg.get("contact_bar_default"):
+        session["contact_bar_layer"]["enabled"] = False  # off until user enters details
 
     # Save any pre-uploaded assets from the index page form
     _presave_asset(logo_file,   session, session_dir, "logo")
@@ -81,7 +163,9 @@ async def generate(
     _presave_asset(bg_file,     session, session_dir, "background")
 
     try:
-        style_cfg = cfg["image_styles"].get(image_style, {})
+        # Resolve image type config for AI prompt generation
+        image_type_cfg = (cfg.get("image_types", {}).get(resolved_image_type) or
+                          cfg.get("image_styles", {}).get(resolved_image_type, {}))
 
         # 2. Generate caption
         tone_cfg = cfg["caption_tones"].get(caption_tone, {})
@@ -90,33 +174,28 @@ async def generate(
             "body": "Your story starts here.",
             "hashtags": ["#PostForge"],
         })
-        caption_prompt = build_caption_prompt(topic, tone_cfg, industry)
+        caption_prompt = build_caption_prompt(topic, tone_cfg, industry,
+                                             brand_context=session.get("brand_description", ""))
         caption = generate_caption(caption_prompt, fallback)
         session["caption"] = caption
         session["social_caption"] = caption.get("social_caption", "")
 
-        # 3. Sync text layers with generated caption
-        palette = cfg["color_palettes"].get(palette_id, {})
-        text_color = palette.get("text_primary", "#FFFFFF")
-        text_color_2 = palette.get("text_secondary", "#CCCCCC")
-
+        # 3. Sync text layers with generated caption (color already set above)
         session["headline_layer"]["text"] = caption["headline"]
-        session["headline_layer"]["color"] = text_color
-        session["body_layer"]["text"] = caption["body"]
-        session["body_layer"]["color"] = text_color_2
-        session["hashtag_layer"]["text"] = " ".join(caption["hashtags"])
+        session["body_layer"]["text"]     = caption["body"]
+        session["hashtag_layer"]["text"]  = " ".join(caption["hashtags"])
 
-        # Populate tag pill for split layouts
-        if style_cfg.get("layout") == "split":
-            hashtags = caption.get("hashtags", [])
+        # Tag pill for split layouts
+        if edit_cfg.get("layout") == "split":
+            hashtags  = caption.get("hashtags", [])
             first_tag = hashtags[0].lstrip("#") if hashtags else " ".join(topic.split()[:3])
-            session["tag_layer"]["text"] = first_tag.upper()
-            session["tag_layer"]["bg_color"] = palette.get("accent", "#B48C3C")
+            session["tag_layer"]["text"]       = first_tag.upper()
+            session["tag_layer"]["bg_color"]   = palette.get("accent", "#B48C3C")
             session["tag_layer"]["text_color"] = palette.get("text_primary", "#FFFFFF")
 
-        # 4. Generate base image
-        img_prompt = build_image_prompt(topic, style_cfg, palette, industry=industry)
-        base_path = session_dir / "base_image.png"
+        # 4. Generate base image using image_type_cfg
+        img_prompt = build_image_prompt(topic, image_type_cfg, palette, industry=industry)
+        base_path  = session_dir / "base_image.png"
         await generate_base_image(img_prompt, palette, base_path, tier=image_tier)
 
         # 5. Compose final image
@@ -157,7 +236,9 @@ async def editor(request: Request, session_id: str):
         "palettes": cfg["color_palettes"],
         "font_styles": cfg["font_styles"],
         "caption_tones": cfg["caption_tones"],
-        "image_styles": cfg["image_styles"],
+        "image_types": cfg.get("image_types", {}),
+        "edit_styles": cfg.get("edit_styles", {}),
+        "image_styles": cfg["image_styles"],   # legacy
         "ts": int(time.time()),
     })
 
@@ -318,7 +399,8 @@ async def regen_caption(request: Request, sid: str):
     tone_id = body.get("caption_tone", session["caption_tone"])
     tone_cfg = cfg["caption_tones"].get(tone_id, {})
     fallback = cfg.get("fallback_caption", {"headline": "", "body": "", "hashtags": []})
-    caption_prompt = build_caption_prompt(topic, tone_cfg, session["industry"])
+    caption_prompt = build_caption_prompt(topic, tone_cfg, session["industry"],
+                                         brand_context=session.get("brand_description", ""))
     caption = generate_caption(caption_prompt, fallback)
 
     session["caption"] = caption
@@ -332,6 +414,106 @@ async def regen_caption(request: Request, sid: str):
     sm.save_session(session)
     _recompose(session, cfg, sid)
     return {"ok": True, "caption": caption, "social_caption": session["social_caption"], "ts": int(time.time())}
+
+
+# ── Analyze brand description → recommend settings ───────────────────────────
+
+@router.post("/api/analyze-brand")
+async def analyze_brand(request: Request):
+    cfg = request.app.state.config
+    body = await request.json()
+    description = body.get("description", "").strip()
+    topic       = body.get("topic", "").strip()
+
+    if not description:
+        return {"error": "description required"}
+
+    fallback = {
+        "industry":     "business_corporate",
+        "image_type":   "photo_lifestyle",
+        "edit_style":   "editorial_clean",
+        "caption_tone": "business_friendly",
+        "palette_id":   "business_professional",
+        "font_style":   "sans_serif_bold",
+    }
+
+    prompt = build_brand_analysis_prompt(
+        description, topic,
+        industries    = list(cfg["industries"].keys()),
+        image_types   = list(cfg.get("image_types", {}).keys()),
+        edit_styles   = list(cfg.get("edit_styles", {}).keys()),
+        caption_tones = list(cfg["caption_tones"].keys()),
+        palettes      = list(cfg["color_palettes"].keys()),
+        font_styles   = list(cfg["font_styles"].keys()),
+    )
+
+    raw = generate_brand_config(prompt, fallback)
+
+    # Validate every field against the real config keys
+    valid = {
+        "industry":     list(cfg["industries"].keys()),
+        "image_type":   list(cfg.get("image_types", {}).keys()),
+        "edit_style":   list(cfg.get("edit_styles", {}).keys()),
+        "caption_tone": list(cfg["caption_tones"].keys()),
+        "palette_id":   list(cfg["color_palettes"].keys()),
+        "font_style":   list(cfg["font_styles"].keys()),
+    }
+    result = {k: (raw.get(k) if raw.get(k) in v else fallback[k]) for k, v in valid.items()}
+    return {"ok": True, **result}
+
+
+# ── AJAX: change post layout (edit_style) ────────────────────────────────────
+
+@router.post("/api/session/{sid}/edit-style")
+async def change_edit_style(request: Request, sid: str):
+    cfg = request.app.state.config
+    body = await request.json()
+    edit_style_id = body.get("edit_style_id", "")
+
+    session = sm.get_session(sid)
+    if not session:
+        return {"error": "not found"}
+
+    edit_cfg = cfg.get("edit_styles", {}).get(edit_style_id, {})
+    if not edit_cfg:
+        return {"error": "unknown edit style"}
+
+    session["edit_style"] = edit_style_id
+
+    # Sync text colors to the new layout's text_color_mode
+    palette = cfg["color_palettes"].get(session["palette_id"], {})
+    if edit_cfg.get("text_color_mode") == "dark":
+        session["headline_layer"]["color"] = palette.get("primary", "#1a2e55")
+        session["body_layer"]["color"]     = palette.get("secondary", "#4A5568")
+    else:
+        session["headline_layer"]["color"] = palette.get("text_primary", "#FFFFFF")
+        session["body_layer"]["color"]     = palette.get("text_secondary", "#CCCCCC")
+
+    sm.save_session(session)
+    _recompose(session, cfg, sid)
+    return {"ok": True, "ts": int(time.time())}
+
+
+# ── AJAX: contact bar ────────────────────────────────────────────────────────
+
+@router.post("/api/session/{sid}/contact")
+async def update_contact_bar(request: Request, sid: str):
+    cfg = request.app.state.config
+    body = await request.json()
+    session = sm.get_session(sid)
+    if not session:
+        return {"error": "not found"}
+
+    cb = session.get("contact_bar_layer", {})
+    if "phone"    in body: cb["phone"]    = str(body["phone"])
+    if "email"    in body: cb["email"]    = str(body["email"])
+    if "bg_color" in body: cb["bg_color"] = str(body["bg_color"])
+    if "enabled"  in body: cb["enabled"]  = bool(body["enabled"])
+    session["contact_bar_layer"] = cb
+
+    sm.save_session(session)
+    _recompose(session, cfg, sid)
+    return {"ok": True, "ts": int(time.time())}
 
 
 # ── AJAX: regenerate social caption + hashtags ────────────────────────────────

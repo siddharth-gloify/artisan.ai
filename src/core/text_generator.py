@@ -77,6 +77,27 @@ def _validate_caption(data: dict, fallback: dict) -> dict:
     }
 
 
+def generate_brand_config(prompt: str, fallback: dict) -> dict:
+    """Call LLM with brand description and return recommended post settings."""
+    client = _client()
+    if not client:
+        return fallback
+    model = os.getenv("OPENROUTER_TEXT_MODEL") or "deepseek/deepseek-chat"
+    try:
+        response = client.chat.completions.create(
+            model=model,
+            max_tokens=200,
+            messages=[{"role": "user", "content": prompt}],
+            extra_headers=_HEADERS,
+        )
+        raw = response.choices[0].message.content or ""
+        data = _parse_json_from_text(raw)
+        return data if isinstance(data, dict) and data else fallback
+    except Exception as exc:
+        log.error("Brand config gen error (%s): %s", model, exc)
+        return fallback
+
+
 def generate_social(prompt: str, fallback: dict) -> dict:
     """Regenerate only social_caption + hashtags (no image parts)."""
     client = _client()

@@ -1,0 +1,108 @@
+image_types:
+
+  # ── Photography ──────────────────────────────────────────────────────────────
+
+  photo_cinematic:
+    id: photo_cinematic
+    name: "Cinematic Photo"
+    category: photography
+    description: "Wide-angle commercial photography, dramatic lighting, depth of field"
+    prompt: "Professional commercial photography, cinematic wide-angle composition, dramatic lighting with rich shadows and highlights, sharp subject against softly blurred background, shallow depth of field, photorealistic 8K quality"
+    photo_direction: "cinematic wide angle, dramatic lighting, shallow depth of field, commercial photography"
+    use_palette: false
+
+  photo_lifestyle:
+    id: photo_lifestyle
+    name: "Lifestyle Photo"
+    category: photography
+    description: "Bright clean lifestyle photography, natural light, editorial quality"
+    prompt: "Bright high-key lifestyle photography, clean natural daylight, professional editorial photography, subjects in authentic comfortable setting, magazine quality"
+    photo_direction: "bright high-key lighting, natural daylight, clean environment, editorial lifestyle"
+    use_palette: false
+
+  photo_dramatic:
+    id: photo_dramatic
+    name: "Dramatic Dark Photo"
+    category: photography
+    description: "Dark moody photography with high contrast and intense atmosphere"
+    prompt: "Dark dramatic commercial photography, high contrast chiaroscuro lighting, subject dramatically lit against dark environment, intense cinematic atmosphere, professional photojournalism"
+    photo_direction: "dark dramatic, high contrast chiaroscuro, moody cinematic atmosphere"
+    use_palette: false
+
+  photo_aerial:
+    id: photo_aerial
+    name: "Wide / Aerial Photo"
+    category: photography
+    description: "Wide establishing shots, panoramic perspectives, epic scale"
+    prompt: "Wide cinematic establishing shot, panoramic perspective, professional landscape or aerial photography, epic scale and depth, golden hour light, sweeping composition"
+    photo_direction: "wide panoramic, epic scale, golden hour, establishing shot"
+    use_palette: false
+
+  photo_portrait:
+    id: photo_portrait
+    name: "Portrait Photo"
+    category: photography
+    description: "Professional portrait, subject-focused, clean background"
+    prompt: "Professional portrait photography, sharp subject in foreground, clean or naturally blurred background, studio or natural light, confident approachable expression"
+    photo_direction: "portrait, sharp subject, professional lighting, clean background"
+    use_palette: false
+
+  # ── Illustration & 3D ─────────────────────────────────────────────────────────
+
+  illustration_3d_festive:
+    id: illustration_3d_festive
+    name: "3D Festive Illustration"
+    category: illustration
+    description: "Vibrant 3D rendered festive scene for holidays and celebrations"
+    prompt: "Professional 3D rendered festive illustration, vibrant celebratory scene, centered subject on soft gradient background, smooth studio lighting, clean joyful composition, no text, no words, no watermarks"
+    photo_direction: "3D festive illustration, soft gradient background, centered, celebratory"
+    use_palette: true
+
+  illustration_3d_clean:
+    id: illustration_3d_clean
+    name: "3D Clean Object"
+    category: illustration
+    description: "Clean 3D product or concept visualization on neutral background"
+    prompt: "Professional 3D product visualization, clean neutral studio background, sharp detailed rendering, modern 3D art, dramatic studio lighting, no text, no words, no watermarks"
+    photo_direction: "3D render, studio lighting, clean neutral background, product visualization"
+    use_palette: true
+
+  # ── Graphic & Abstract ────────────────────────────────────────────────────────
+
+  gradient_vibrant:
+    id: gradient_vibrant
+    name: "Vibrant Gradient"
+    category: graphic
+    description: "Bold dynamic gradient abstract background"
+    prompt: "Vibrant gradient abstract background, dynamic color transitions, bold graphic design, high energy, smooth gradient mesh, abstract geometric shapes, no text, no words"
+    photo_direction: "vibrant gradient, abstract, bold colors, high energy"
+    use_palette: true
+
+  gradient_soft:
+    id: gradient_soft
+    name: "Soft Gradient"
+    category: graphic
+    description: "Gentle pastel gradient, calm and soothing"
+    prompt: "Soft pastel gradient background, gentle color transitions, airy light atmosphere, modern minimal aesthetic, dreamy soft tones, no text, no words"
+    photo_direction: "soft pastel gradient, gentle tones, minimal, calm"
+    use_palette: true
+
+  minimal_texture:
+    id: minimal_texture
+    name: "Minimal Texture"
+    category: graphic
+    description: "Clean minimal background with subtle texture and depth"
+    prompt: "Clean minimalist background with subtle paper or fabric texture, professional design, muted elegant tones, abstract minimal composition, studio quality, no text, no words"
+    photo_direction: "minimal texture, clean, subtle depth, professional"
+    use_palette: true
+
+image_type_categories:
+  photography:
+    label: "Photography"
+    description: "Real-world photography styles"
+  illustration:
+    label: "Illustration & 3D"
+    description: "Illustrated and 3D rendered backgrounds"
+  graphic:
+    label: "Graphic & Abstract"
+    description: "Gradient, pattern, and abstract backgrounds"

@@ -132,16 +132,32 @@ textarea, input, select, button { font-family: inherit; }
   max-width: 480px;
 }
 
-/* ── Quick starts ─────────────────────────────────────────────────────── */
-.quick-starts { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 14px; }
-.quick-start-btn {
-  padding: 5px 13px; border-radius: 100px;
-  background: var(--surface-2); border: 1px solid var(--border);
-  color: var(--text-2); cursor: pointer; font-size: .8rem; font-weight: 500;
-  transition: all var(--transition);
+/* ── Brand description block ──────────────────────────────────────────── */
+.brand-desc-block {
+  margin-top: 36px; padding: 24px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
 }
-.quick-start-btn:hover {
-  background: var(--primary-dim); border-color: var(--primary); color: var(--text);
+.brand-desc-label {
+  font-size: .96rem; font-weight: 700; letter-spacing: -.01em; display: block; margin-bottom: 6px;
+}
+.brand-desc-hint { font-size: .82rem; color: var(--text-2); margin-bottom: 12px; line-height: 1.5; }
+.brand-desc-textarea {
+  width: 100%; padding: 12px 14px;
+  background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-sm);
+  color: var(--text); font-size: .9rem; resize: vertical; line-height: 1.6;
+  transition: border-color var(--transition); font-family: inherit;
+}
+.brand-desc-textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-dim); }
+.brand-desc-textarea::placeholder { color: var(--text-3); }
+.brand-desc-actions { display: flex; align-items: center; gap: 14px; margin-top: 12px; flex-wrap: wrap; }
+.auto-config-status { font-size: .82rem; flex: 1; line-height: 1.4; }
+
+.manual-divider {
+  display: flex; align-items: center; gap: 16px;
+  margin: 32px 0 4px; color: var(--text-3); font-size: .78rem;
+}
+.manual-divider::before, .manual-divider::after {
+  content: ""; flex: 1; height: 1px; background: var(--border);
 }
 
 /* ── Sections ─────────────────────────────────────────────────────────── */
@@ -484,6 +500,16 @@ textarea, input, select, button { font-family: inherit; }
 .font-pill.active {
   background: var(--primary-dim); border-color: var(--primary); color: var(--text);
 }
+
+/* ── Contact bar ctrl input ───────────────────────────────────────────── */
+.ctrl-input {
+  width: 100%; padding: 6px 9px; margin-top: 4px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-xs);
+  color: var(--text); font-size: .8rem;
+  transition: border-color var(--transition);
+}
+.ctrl-input:focus { outline: none; border-color: var(--primary); }
+.ctrl-input::placeholder { color: var(--text-3); }
 
 /* ── Tier mini buttons (editor) ───────────────────────────────────────── */
 .tier-mini-grid { display: flex; gap: 4px; margin-top: 6px; }

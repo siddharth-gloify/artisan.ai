@@ -7,39 +7,39 @@
   <!-- Hero -->
   <div class="hero">
     <h1 class="hero-title">Turn any idea into a<br /><em>polished Instagram post</em></h1>
-    <p class="hero-sub">Pick your industry, style, and tone — PostForge generates the copy and imagery in seconds.</p>
+    <p class="hero-sub">Describe your brand and topic — PostForge writes the copy, chooses the style, and generates the image.</p>
   </div>
-
-  <!-- Quick Starts -->
-  <section class="section">
-    <h2 class="section-title">Start from a template</h2>
-    <div class="quick-starts" style="margin-top:14px;">
-      {% for key, tmpl in quick_starts.items() %}
-      <button class="quick-start-btn" data-template="{{ key }}"
-              data-industry="{{ tmpl.industry }}"
-              data-style="{{ tmpl.image_style }}"
-              data-tone="{{ tmpl.caption_tone }}"
-              data-palette="{{ tmpl.palette }}"
-              data-font="{{ tmpl.font_style }}">
-        {{ tmpl.name }}
-      </button>
-      {% endfor %}
-    </div>
-  </section>
 
   <!-- Main form -->
   <form method="POST" action="/generate" id="setupForm" enctype="multipart/form-data">
 
-    <!-- Step 1: Industry -->
+    <!-- Brand description + Auto-configure -->
+    <div class="brand-desc-block">
+      <label class="brand-desc-label">Describe your brand or product</label>
+      <p class="brand-desc-hint">The AI will read this and recommend the best settings below. You can still change anything.</p>
+      <textarea class="brand-desc-textarea" name="brand_description" id="brandDescription" rows="3"
+        placeholder="e.g. We're Allders Insurance Agency — affordable car, home and life insurance for families in Tanzania. Professional, trustworthy, and community-focused."></textarea>
+      <div class="brand-desc-actions">
+        <button type="button" class="btn btn-primary" id="autoConfigBtn">
+          Auto-configure settings
+        </button>
+        <span class="auto-config-status" id="autoConfigStatus"></span>
+      </div>
+    </div>
+
+    <div class="manual-divider"><span>or configure manually below</span></div>
+
+    <!-- Step 1: Industry (optional) -->
     <section class="section" id="step-industry">
       <div class="step-header">
-        <span class="step-badge">1</span>
+        <span class="step-badge step-muted">1</span>
         <h2 class="section-title">Industry</h2>
+        <span class="step-hint">Optional — auto-detected from your description</span>
       </div>
       <div class="card-grid">
         {% for key, ind in industries.items() %}
         <label class="select-card" data-group="industry" data-value="{{ key }}">
-          <input type="radio" name="industry" value="{{ key }}" required hidden />
+          <input type="radio" name="industry" value="{{ key }}" hidden />
           <span class="card-icon">{{ ind.icon }}</span>
           <span class="card-name">{{ ind.name }}</span>
           <span class="card-desc">{{ ind.description }}</span>
@@ -48,38 +48,62 @@
       </div>
     </section>
 
-    <!-- Step 2: Image Style -->
-    <section class="section" id="step-style">
+    <!-- Step 2: Image Type (optional) -->
+    <section class="section" id="step-image-type">
       <div class="step-header">
-        <span class="step-badge">2</span>
-        <h2 class="section-title">Image style</h2>
-        <span class="step-hint">Filtered for your industry</span>
+        <span class="step-badge step-muted">2</span>
+        <h2 class="section-title">Image type</h2>
+        <span class="step-hint">Optional — auto-picked from your description</span>
       </div>
       <div class="style-filter-tabs">
-        <button type="button" class="filter-tab active" data-cat="all">All</button>
-        {% for cat_key, cat in style_categories.items() %}
-        <button type="button" class="filter-tab" data-cat="{{ cat_key }}">{{ cat.label }}</button>
+        <button type="button" class="filter-tab active" data-icat="all">All</button>
+        {% for cat_key, cat in image_type_categories.items() %}
+        <button type="button" class="filter-tab" data-icat="{{ cat_key }}">{{ cat.label }}</button>
         {% endfor %}
       </div>
-      <div class="card-grid style-grid">
-        {% for key, style in image_styles.items() %}
-        <label class="select-card style-card"
-               data-group="image_style" data-value="{{ key }}"
-               data-cat="{{ style.category }}"
-               data-industries="{{ style.best_for | join(',') }}">
-          <input type="radio" name="image_style" value="{{ key }}" required hidden />
-          <span class="card-name">{{ style.name }}</span>
-          <span class="card-desc">{{ style.mood }}</span>
-          {% if style.trending_2025 %}<span class="badge-trending">Trending</span>{% endif %}
+      <div class="card-grid itype-grid">
+        {% for key, itype in image_types.items() %}
+        <label class="select-card itype-card"
+               data-group="image_type" data-value="{{ key }}"
+               data-icat="{{ itype.category }}">
+          <input type="radio" name="image_type" value="{{ key }}" hidden />
+          <span class="card-name">{{ itype.name }}</span>
+          <span class="card-desc">{{ itype.description }}</span>
         </label>
         {% endfor %}
       </div>
     </section>
 
-    <!-- Step 2b: Image Quality -->
+    <!-- Step 3: Edit / Post Layout (how Pillow composes) -->
+    <section class="section" id="step-edit-style">
+      <div class="step-header">
+        <span class="step-badge">3</span>
+        <h2 class="section-title">Post layout</h2>
+        <span class="step-hint">How your text and design are composed</span>
+      </div>
+      <div class="style-filter-tabs">
+        <button type="button" class="filter-tab active" data-ecat="all">All</button>
+        {% for cat_key, cat in edit_style_categories.items() %}
+        <button type="button" class="filter-tab" data-ecat="{{ cat_key }}">{{ cat.label }}</button>
+        {% endfor %}
+      </div>
+      <div class="card-grid estyle-grid">
+        {% for key, es in edit_styles.items() %}
+        <label class="select-card estyle-card"
+               data-group="edit_style" data-value="{{ key }}"
+               data-ecat="{{ es.category }}">
+          <input type="radio" name="edit_style" value="{{ key }}" required hidden />
+          <span class="card-name">{{ es.name }}</span>
+          <span class="card-desc">{{ es.description }}</span>
+        </label>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- Step 3b: Image Quality -->
     <section class="section" id="step-tier">
       <div class="step-header">
-        <span class="step-badge step-muted">2b</span>
+        <span class="step-badge step-muted">3b</span>
         <h2 class="section-title">Image quality</h2>
       </div>
       <div class="tier-grid">
@@ -107,10 +131,10 @@
       </div>
     </section>
 
-    <!-- Step 3: Caption Tone -->
+    <!-- Step 4: Caption Tone -->
     <section class="section" id="step-tone">
       <div class="step-header">
-        <span class="step-badge">3</span>
+        <span class="step-badge">4</span>
         <h2 class="section-title">Caption tone</h2>
       </div>
       <div class="card-grid tone-grid">
@@ -125,11 +149,12 @@
       </div>
     </section>
 
-    <!-- Step 4: Color Palette -->
+    <!-- Step 5: Color Palette (optional) -->
     <section class="section" id="step-palette">
       <div class="step-header">
-        <span class="step-badge">4</span>
+        <span class="step-badge step-muted">5</span>
         <h2 class="section-title">Color palette</h2>
+        <span class="step-hint">Optional — auto-matched to your brand</span>
       </div>
       <div class="palette-cat-tabs">
         <button type="button" class="filter-tab active" data-pcat="all">All</button>
@@ -141,7 +166,7 @@
         {% for key, pal in palettes.items() %}
         <label class="palette-card" data-group="palette_id" data-value="{{ key }}"
                data-pcat="{{ pal.category }}">
-          <input type="radio" name="palette_id" value="{{ key }}" required hidden />
+          <input type="radio" name="palette_id" value="{{ key }}" hidden />
           <div class="palette-swatches">
             <span class="swatch" style="background:{{ pal.background }};"></span>
             <span class="swatch" style="background:{{ pal.primary }};"></span>
@@ -154,10 +179,10 @@
       </div>
     </section>
 
-    <!-- Step 5: Font Style -->
+    <!-- Step 6: Font Style -->
     <section class="section" id="step-font">
       <div class="step-header">
-        <span class="step-badge">5</span>
+        <span class="step-badge">6</span>
         <h2 class="section-title">Font style</h2>
         <span class="step-hint">Auto-recommended from your selections</span>
       </div>
@@ -173,10 +198,10 @@
       </div>
     </section>
 
-    <!-- Step 6: Topic + Assets -->
+    <!-- Step 7: Topic + Assets -->
     <section class="section" id="step-topic">
       <div class="step-header">
-        <span class="step-badge">6</span>
+        <span class="step-badge">7</span>
         <h2 class="section-title">Your content</h2>
       </div>
 
@@ -185,6 +210,19 @@
           <label class="form-label">What's this post about? <span class="required">*</span></label>
           <input class="form-input" type="text" name="topic" required
                  placeholder="e.g. Our new product launch, Summer sale 50% off, Morning yoga routine…" />
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div class="form-group">
+            <label class="form-label">Phone <span style="font-weight:400;color:var(--text-3);">— optional, for contact bar</span></label>
+            <input class="form-input" type="text" name="contact_phone" id="contactPhoneIndex"
+                   placeholder="+1 234 567 890" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email <span style="font-weight:400;color:var(--text-3);">— optional, for contact bar</span></label>
+            <input class="form-input" type="text" name="contact_email" id="contactEmailIndex"
+                   placeholder="hello@yourbrand.com" />
+          </div>
         </div>
 
         <div>
@@ -267,14 +305,26 @@ document.querySelectorAll(".tier-card").forEach(card => {
   });
 });
 
-// ── Style category filter ──────────────────────────────────────────────────
-document.querySelectorAll(".filter-tab[data-cat]").forEach(tab => {
+// ── Image type category filter ─────────────────────────────────────────────
+document.querySelectorAll(".filter-tab[data-icat]").forEach(tab => {
   tab.addEventListener("click", () => {
-    document.querySelectorAll(".filter-tab[data-cat]").forEach(t => t.classList.remove("active"));
+    document.querySelectorAll(".filter-tab[data-icat]").forEach(t => t.classList.remove("active"));
     tab.classList.add("active");
-    const cat = tab.dataset.cat;
-    document.querySelectorAll(".style-card").forEach(card => {
-      card.style.display = (cat === "all" || card.dataset.cat === cat) ? "" : "none";
+    const cat = tab.dataset.icat;
+    document.querySelectorAll(".itype-card").forEach(card => {
+      card.style.display = (cat === "all" || card.dataset.icat === cat) ? "" : "none";
+    });
+  });
+});
+
+// ── Edit style category filter ─────────────────────────────────────────────
+document.querySelectorAll(".filter-tab[data-ecat]").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".filter-tab[data-ecat]").forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+    const cat = tab.dataset.ecat;
+    document.querySelectorAll(".estyle-card").forEach(card => {
+      card.style.display = (cat === "all" || card.dataset.ecat === cat) ? "" : "none";
     });
   });
 });
@@ -325,41 +375,87 @@ function autoRecommend(industry) {
 }
 
 // ── Summary update ─────────────────────────────────────────────────────────
-const REQUIRED = ["industry", "image_style", "caption_tone", "palette_id", "font_style"];
+// Required: must be chosen. Optional: auto-filled from brand description if skipped.
+const REQUIRED = ["edit_style", "caption_tone", "font_style"];
+const OPTIONAL = ["industry", "image_type", "palette_id"];
+
 function updateSummary() {
   const chosen = {};
-  REQUIRED.forEach(key => {
+  [...REQUIRED, ...OPTIONAL].forEach(key => {
     const el = document.querySelector(`input[name='${key}']:checked`);
     if (el) chosen[key] = el.closest("[data-value]").dataset.value;
   });
-  const done = REQUIRED.filter(k => chosen[k]).length;
-  const btn = document.getElementById("generateBtn");
-  const summary = document.getElementById("generateSummary");
-  if (done >= REQUIRED.length) {
+  const reqDone  = REQUIRED.filter(k => chosen[k]).length;
+  const optDone  = OPTIONAL.filter(k => chosen[k]).length;
+  const btn      = document.getElementById("generateBtn");
+  const summary  = document.getElementById("generateSummary");
+
+  if (reqDone >= REQUIRED.length) {
     btn.disabled = false;
-    summary.textContent = `Ready — ${Object.values(chosen).join(" · ")}`;
+    const autoCount = OPTIONAL.length - optDone;
+    const parts = REQUIRED.map(k => chosen[k]).filter(Boolean);
+    summary.textContent = autoCount > 0
+      ? `Ready — ${autoCount} optional field${autoCount > 1 ? "s" : ""} will be auto-configured`
+      : `Ready — ${parts.join(" · ")}`;
   } else {
     btn.disabled = true;
-    summary.textContent = `${done} of ${REQUIRED.length} selections made`;
+    summary.textContent = `${reqDone} of ${REQUIRED.length} required selections made`;
   }
 }
 
-// ── Quick-start templates ──────────────────────────────────────────────────
-document.querySelectorAll(".quick-start-btn").forEach(btn => {
-  btn.addEventListener("click", () => {
-    const map = {
-      industry: btn.dataset.industry,
-      image_style: btn.dataset.style,
-      caption_tone: btn.dataset.tone,
-      palette_id: btn.dataset.palette,
-      font_style: btn.dataset.font,
-    };
-    Object.entries(map).forEach(([key, val]) => {
-      const card = document.querySelector(`[data-group='${key}'][data-value='${val}']`);
-      if (card) card.click();
+// ── Auto-configure from brand description ─────────────────────────────────
+document.getElementById("autoConfigBtn")?.addEventListener("click", async () => {
+  const description = document.getElementById("brandDescription").value.trim();
+  const topic = document.querySelector("input[name='topic']")?.value.trim() || "";
+  const btn   = document.getElementById("autoConfigBtn");
+  const status = document.getElementById("autoConfigStatus");
+
+  if (!description) {
+    status.textContent = "Please enter your brand description first.";
+    status.style.color = "var(--danger)";
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = "Analyzing…";
+  status.textContent = "";
+
+  try {
+    const r = await fetch("/api/analyze-brand", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ description, topic }),
     });
-    document.getElementById("step-topic").scrollIntoView({ behavior: "smooth" });
-  });
+    const data = await r.json();
+
+    if (data.ok) {
+      const fields = {
+        industry:     data.industry,
+        image_type:   data.image_type,
+        edit_style:   data.edit_style,
+        caption_tone: data.caption_tone,
+        palette_id:   data.palette_id,
+        font_style:   data.font_style,
+      };
+      let applied = 0;
+      for (const [group, value] of Object.entries(fields)) {
+        const card = document.querySelector(`[data-group='${group}'][data-value='${value}']`);
+        if (card) { card.click(); applied++; }
+      }
+      status.textContent = `Done — ${applied} settings configured. Review and adjust below.`;
+      status.style.color = "var(--success)";
+      document.getElementById("step-topic").scrollIntoView({ behavior: "smooth" });
+    } else {
+      status.textContent = data.error || "Could not analyze — configure manually.";
+      status.style.color = "var(--danger)";
+    }
+  } catch(e) {
+    status.textContent = "Request failed — configure manually.";
+    status.style.color = "var(--danger)";
+  }
+
+  btn.disabled = false;
+  btn.textContent = "Auto-configure settings";
 });
 
 // ── File upload preview ────────────────────────────────────────────────────
