@@ -226,7 +226,316 @@ edit_styles:
     accent_rule: false
     contact_bar_default: false
 
+  # ── Premium layouts — modeled on real agency / photo-editor Instagram posts ──
+
+  magazine_masthead:
+    id: magazine_masthead
+    name: "Magazine Masthead"
+    category: premium
+    description: "Muted photo, vignette, tracked uppercase masthead — fashion magazine cover"
+    mood: "Editorial, Fashion, Iconic"
+    layout: full_bleed
+    photo_treatment: mute
+    overlay_type: vignette
+    overlay_color: "#000000"
+    overlay_opacity: 0.50
+    text_zone: top
+    text_align: center
+    headline_transform: uppercase
+    headline_tracking: 8
+    text_shadow: true
+    kicker_style: tracked
+    kicker_color: "palette.accent"
+    headline_default_size: 82
+    body_default_size: 28
+    headline_line_gap: 10
+    body_line_gap: 14
+    side_padding: 80
+    text_color_mode: white
+    logo_pos: top_right
+    logo_padding: 46
+    logo_max: [160, 90]
+    accent_rule: false
+    contact_bar_default: false
+
+  gallery_frame:
+    id: gallery_frame
+    name: "Gallery Frame"
+    category: premium
+    description: "Thin white inner frame, text anchored bottom-left — gallery exhibition print"
+    mood: "Artistic, Refined, Curated"
+    layout: full_bleed
+    overlay_type: solid
+    overlay_color: "#000000"
+    overlay_opacity: 0.30
+    frame: true
+    frame_inset: 36
+    frame_thickness: 3
+    frame_color: "#FFFFFF"
+    text_zone: bottom
+    text_align: left
+    text_shadow: true
+    kicker_style: tracked
+    kicker_color: "palette.accent"
+    accent_rule: true
+    accent_rule_length: 140
+    accent_rule_thickness: 4
+    accent_rule_color: "palette.accent"
+    accent_gap_above: 18
+    accent_gap_below: 20
+    headline_default_size: 68
+    body_default_size: 28
+    headline_line_gap: 6
+    body_line_gap: 12
+    side_padding: 88
+    text_color_mode: white
+    logo_pos: top_right
+    logo_padding: 58
+    logo_max: [150, 85]
+    contact_bar_default: false
+
+  bottom_card:
+    id: bottom_card
+    name: "Bottom Card"
+    category: premium
+    description: "Clean photo with a white rounded info card at the bottom — agency staple"
+    mood: "Clean, Trustworthy, Modern"
+    layout: full_bleed
+    overlay_type: none
+    overlay_opacity: 0.0
+    text_zone: bottom
+    text_align: left
+    text_backdrop: card
+    backdrop_color: "#FFFFFF"
+    backdrop_opacity: 0.97
+    backdrop_radius: 30
+    backdrop_pad_x: 44
+    backdrop_pad_y: 42
+    kicker_style: pill
+    headline_default_size: 56
+    body_default_size: 26
+    headline_line_gap: 6
+    body_line_gap: 11
+    side_padding: 96
+    text_color_mode: dark
+    logo_pos: top_right
+    logo_padding: 46
+    logo_max: [160, 90]
+    accent_rule: false
+    contact_bar_default: false
+
+  glass_panel:
+    id: glass_panel
+    name: "Glass Panel"
+    category: premium
+    description: "Frosted-glass blur card with centered text — modern premium app aesthetic"
+    mood: "Sleek, Contemporary, Premium"
+    layout: full_bleed
+    overlay_type: none
+    overlay_opacity: 0.0
+    text_zone: center_stack
+    text_align: center
+    text_backdrop: glass
+    backdrop_color: "#0E1116"
+    backdrop_opacity: 0.42
+    backdrop_radius: 34
+    backdrop_pad_x: 52
+    backdrop_pad_y: 52
+    kicker_style: tracked
+    kicker_color: "palette.accent"
+    headline_default_size: 66
+    body_default_size: 28
+    headline_line_gap: 8
+    body_line_gap: 13
+    side_padding: 110
+    text_color_mode: white
+    logo_pos: top_right
+    logo_padding: 46
+    logo_max: [160, 90]
+    accent_rule: false
+    contact_bar_default: false
+
+  statement_band:
+    id: statement_band
+    name: "Statement Band"
+    category: premium
+    description: "Full photo with a solid brand-color band carrying the message at the bottom"
+    mood: "Confident, Branded, Direct"
+    layout: full_bleed
+    overlay_type: none
+    overlay_opacity: 0.0
+    bottom_band_frac: 0.36
+    bottom_band_color: "palette.primary"
+    bottom_band_opacity: 1.0
+    text_zone: band
+    band_text_pad: 60
+    text_align: left
+    kicker_style: tracked
+    kicker_color: "palette.background"
+    headline_default_size: 60
+    body_default_size: 27
+    headline_line_gap: 6
+    body_line_gap: 11
+    side_padding: 76
+    text_color_mode: white_pure
+    logo_pos: top_right
+    logo_padding: 46
+    logo_max: [160, 90]
+    accent_rule: false
+    contact_bar_default: false
+
+  signature_quote:
+    id: signature_quote
+    name: "Signature Quote"
+    category: premium
+    description: "Large decorative quote mark, centered serif statement — thought-leadership post"
+    mood: "Inspirational, Personal, Elegant"
+    layout: full_bleed
+    photo_treatment: mute
+    overlay_type: vignette
+    overlay_color: "#000000"
+    overlay_opacity: 0.52
+    quote_mark: true
+    quote_color: "palette.accent"
+    quote_size: 150
+    text_zone: center_stack
+    text_align: center
+    text_shadow: true
+    headline_default_size: 56
+    body_default_size: 26
+    headline_line_gap: 12
+    body_line_gap: 12
+    side_padding: 110
+    text_color_mode: white
+    logo_pos: top_right
+    logo_padding: 46
+    logo_max: [150, 85]
+    accent_rule: false
+    contact_bar_default: false
+
+  left_spotlight:
+    id: left_spotlight
+    name: "Left Spotlight"
+    category: premium
+    description: "Side gradient with vertical accent bar and left-aligned copy — product feature"
+    mood: "Focused, Sophisticated, Editorial"
+    layout: full_bleed
+    overlay_type: gradient_left
+    overlay_color: "#000000"
+    overlay_gradient_opacity: 0.82
+    text_zone: middle
+    text_align: left
+    side_bar: true
+    side_bar_color: "palette.accent"
+    side_bar_width: 10
+    side_bar_gap: 30
+    kicker_style: tracked
+    kicker_color: "palette.accent"
+    headline_default_size: 68
+    body_default_size: 29
+    headline_line_gap: 7
+    body_line_gap: 13
+    side_padding: 96
+    text_color_mode: white
+    logo_pos: top_right
+    logo_padding: 46
+    logo_max: [160, 90]
+    accent_rule: false
+    contact_bar_default: false
+
+  press_headline:
+    id: press_headline
+    name: "Press Headline"
+    category: premium
+    description: "Deep bottom gradient, accent topic pill, big uppercase headline — news media style"
+    mood: "Urgent, Authoritative, Newsworthy"
+    layout: full_bleed
+    overlay_type: gradient_bottom
+    overlay_color: "#000000"
+    overlay_gradient_opacity: 0.88
+    text_zone: bottom
+    text_align: left
+    kicker_style: pill
+    headline_transform: uppercase
+    headline_tracking: 1
+    headline_default_size: 70
+    body_default_size: 25
+    headline_line_gap: 5
+    body_line_gap: 10
+    side_padding: 72
+    text_color_mode: white
+    logo_pos: top_left
+    logo_padding: 46
+    logo_max: [150, 85]
+    accent_rule: false
+    contact_bar_default: false
+
+  studio_matte:
+    id: studio_matte
+    name: "Studio Matte"
+    category: premium
+    description: "Photo inset on a solid matte with drop shadow, caption below — printed studio card"
+    mood: "Crafted, Tactile, Portfolio"
+    layout: full_bleed
+    photo_matte: true
+    matte_padding: 56
+    matte_bottom: 360
+    matte_color: "palette.background"
+    overlay_type: none
+    overlay_opacity: 0.0
+    text_zone: matte
+    matte_text_pad: 48
+    text_align: left
+    kicker_style: tracked
+    kicker_color: "palette.accent"
+    headline_default_size: 52
+    body_default_size: 24
+    headline_line_gap: 6
+    body_line_gap: 10
+    side_padding: 56
+    text_color_mode: dark
+    logo_pos: top_right
+    logo_padding: 76
+    logo_max: [140, 80]
+    accent_rule: false
+    contact_bar_default: false
+
+  duotone_punch:
+    id: duotone_punch
+    name: "Duotone Punch"
+    category: premium
+    description: "Photo remapped to two brand colors, huge tracked uppercase center type — campaign look"
+    mood: "Bold, Branded, Campaign"
+    layout: full_bleed
+    photo_treatment: duotone
+    duotone_dark: "palette.background"
+    duotone_light: "palette.primary"
+    overlay_type: solid
+    overlay_color: "#000000"
+    overlay_opacity: 0.18
+    text_zone: center_stack
+    text_align: center
+    headline_transform: uppercase
+    headline_tracking: 5
+    text_shadow: true
+    kicker_style: tracked
+    kicker_color: "#FFFFFF"
+    headline_default_size: 88
+    body_default_size: 28
+    headline_line_gap: 8
+    body_line_gap: 13
+    side_padding: 84
+    text_color_mode: white_pure
+    logo_pos: top_right
+    logo_padding: 46
+    logo_max: [160, 90]
+    accent_rule: false
+    contact_bar_default: false
+
 edit_style_categories:
+  premium:
+    label: "Premium / Agency"
+    description: "High-end layouts modeled on real photo-editor and marketing-agency posts"
   commercial:
     label: "Commercial & Brand"
     description: "Professional brand layouts based on real commercial Instagram posts"

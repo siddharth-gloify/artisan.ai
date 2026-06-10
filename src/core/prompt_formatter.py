@@ -132,35 +132,99 @@ def build_social_prompt(topic: str, tone_config: dict, industry: str) -> str:
     )
 
 
-def build_image_prompt(topic: str, image_type_cfg: dict, palette: dict, industry: str = "") -> str:
-    """Build AI image generation prompt from image_type_cfg (new) or legacy style_config."""
+# Copy-space direction per edit-style text zone — tells the model to leave
+# clean negative space where the headline/body will be overlaid, the way an
+# art director briefs a photographer for a layout.
+_COPY_SPACE = {
+    "top": (
+        "Compose with the upper third of the frame clean and uncluttered "
+        "(open sky, plain wall, or soft out-of-focus area) — headline text will be "
+        "placed there. Keep the main subject in the lower two thirds."
+    ),
+    "middle": (
+        "Keep the middle band of the frame visually calm and free of busy detail "
+        "so overlaid text stays readable; place key subject interest toward the "
+        "lower half or the edges of the frame."
+    ),
+    "bottom": (
+        "Compose with the lower third of the frame simple and free of busy detail — "
+        "text will be placed there. Keep the main subject in the upper two thirds."
+    ),
+    "band": (
+        "Compose with the lower third simple — it will be covered by a solid color "
+        "panel. Keep the main subject and all interest in the upper two thirds."
+    ),
+    "center": (
+        "Frame the main subject slightly off-center and keep the center of the "
+        "frame relatively calm — text will be overlaid in the middle."
+    ),
+    "center_stack": (
+        "Frame the main subject slightly off-center and keep the center of the "
+        "frame relatively calm — text will be overlaid in the middle."
+    ),
+    "matte": (
+        "Center the main subject with comfortable margins on every side — the "
+        "photo will be cropped into a matte frame."
+    ),
+}
+
+# Realism cues for photography types — pushes the model away from the glossy
+# over-perfect digital-art look toward believable campaign photography.
+_PHOTO_REALISM = (
+    "Shot on a professional full-frame camera with a fast prime lens. "
+    "Natural realistic lighting, true-to-life colors and skin texture, honest "
+    "candid feel with small real-world imperfections, subtle fine grain — it must "
+    "look like an actual photograph from a brand campaign, not digital art. "
+)
+
+
+def build_image_prompt(
+    topic: str,
+    image_type_cfg: dict,
+    palette: dict,
+    industry: str = "",
+    edit_cfg: dict | None = None,
+) -> str:
+    """Build AI image generation prompt from image_type_cfg (new) or legacy style_config.
+    edit_cfg (the post layout) drives copy-space composition hints."""
     scene           = INDUSTRY_SCENE.get(industry, "professional lifestyle photography scene")
     base_prompt     = image_type_cfg.get("prompt", image_type_cfg.get("image_prompt", ""))
     photo_direction = image_type_cfg.get("photo_direction", "")
     use_palette     = image_type_cfg.get("use_palette", True)
+    is_photo        = image_type_cfg.get("category", "") == "photography"
 
-    # Split layouts still use the simple scene-only prompt
-    if image_type_cfg.get("layout") == "split":
+    # Split layouts: photo fills the bottom zone only — no text lands on it
+    if (edit_cfg or {}).get("layout") == "split" or image_type_cfg.get("layout") == "split":
         return (
-            f"Photorealistic photograph about {topic}. "
-            f"Show: {scene}. "
-            f"Cinematic composition, ultra detailed, 8K, {_NO_TEXT}."
+            f"A vertical portrait-format photograph about {topic}. "
+            f"Scene: {scene}. "
+            f"{_PHOTO_REALISM}"
+            f"Cinematic composition with the main subject centered. {_NO_TEXT}."
         )
 
     direction_part = f"Photography direction: {photo_direction}. " if photo_direction else ""
+    realism_part   = _PHOTO_REALISM if is_photo else ""
+
+    text_zone  = (edit_cfg or {}).get("text_zone", "")
+    copy_space = _COPY_SPACE.get(text_zone, "")
+    if copy_space:
+        copy_space += " "
 
     if use_palette:
         primary   = palette.get("primary",   "#FFFFFF")
         secondary = palette.get("secondary", "#000000")
-        palette_part = f"Color palette featuring {primary} and {secondary}. "
+        palette_part = f"Color palette built around {primary} and {secondary}. "
     else:
         palette_part = ""
 
+    kind = "photograph" if is_photo else "image"
     return (
-        f"Photorealistic image about {topic}. "
-        f"Show: {scene}. "
-        f"Visual style: {base_prompt}. "
+        f"A vertical 4:5 portrait-format {kind} for an Instagram post about {topic}. "
+        f"Scene: {scene}. "
+        f"Style: {base_prompt}. "
         f"{direction_part}"
+        f"{realism_part}"
+        f"{copy_space}"
         f"{palette_part}"
-        f"Instagram post format 4:5, high quality, professional, {_NO_TEXT}."
+        f"{_NO_TEXT}."
     )

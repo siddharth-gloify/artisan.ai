@@ -16,7 +16,7 @@ from src.core.prompt_formatter import (
     build_caption_prompt, build_image_prompt, build_social_prompt, build_brand_analysis_prompt,
 )
 from src.core.text_generator import generate_caption, generate_social, generate_brand_config
-from src.utils.constants import SESSIONS_DIR, OUTPUT_DIR
+from src.utils.constants import SESSIONS_DIR, OUTPUT_DIR, POST_WIDTH
 from src.utils.helpers import ensure_dir, sanitize_filename
 from src.utils.logger import get_logger
 
@@ -136,14 +136,21 @@ async def generate(
     if edit_cfg.get("body_default_size"):
         session["body_layer"]["font_size"] = edit_cfg["body_default_size"]
 
-    # Text colors: dark mode for editorial styles, white for cinematic/drama
+    # Text colors: dark mode for editorial styles, white for cinematic/drama,
+    # white_pure for text on brand-colored surfaces (bands, duotones)
     text_color_mode = edit_cfg.get("text_color_mode", "white")
     if text_color_mode == "dark":
         session["headline_layer"]["color"] = palette.get("primary", "#1a2e55")
         session["body_layer"]["color"]     = palette.get("secondary", "#4A5568")
+    elif text_color_mode == "white_pure":
+        session["headline_layer"]["color"] = "#FFFFFF"
+        session["body_layer"]["color"]     = "#F2F2F2"
     else:
         session["headline_layer"]["color"] = palette.get("text_primary", "#FFFFFF")
         session["body_layer"]["color"]     = palette.get("text_secondary", "#CCCCCC")
+
+    # Initialize logo position to match the edit style's preset so d-pad starts from correct spot
+    _sync_logo_position(session, edit_cfg)
 
     # Store brand description
     session["brand_description"] = brand_description.strip()
@@ -185,16 +192,17 @@ async def generate(
         session["body_layer"]["text"]     = caption["body"]
         session["hashtag_layer"]["text"]  = " ".join(caption["hashtags"])
 
-        # Tag pill for split layouts
-        if edit_cfg.get("layout") == "split":
+        # Tag pill for split layouts + kicker label for premium layouts
+        if edit_cfg.get("layout") == "split" or edit_cfg.get("kicker_style") in ("pill", "tracked"):
             hashtags  = caption.get("hashtags", [])
             first_tag = hashtags[0].lstrip("#") if hashtags else " ".join(topic.split()[:3])
             session["tag_layer"]["text"]       = first_tag.upper()
             session["tag_layer"]["bg_color"]   = palette.get("accent", "#B48C3C")
             session["tag_layer"]["text_color"] = palette.get("text_primary", "#FFFFFF")
 
-        # 4. Generate base image using image_type_cfg
-        img_prompt = build_image_prompt(topic, image_type_cfg, palette, industry=industry)
+        # 4. Generate base image using image_type_cfg (+ layout copy-space hints)
+        img_prompt = build_image_prompt(topic, image_type_cfg, palette,
+                                        industry=industry, edit_cfg=edit_cfg)
         base_path  = session_dir / "base_image.png"
         await generate_base_image(img_prompt, palette, base_path, tier=image_tier)
 
@@ -245,6 +253,57 @@ async def editor(request: Request, session_id: str):
 
 # ── AJAX: move layer ──────────────────────────────────────────────────────────
 
+_TEXT_LAYERS = {"headline", "body", "hashtag"}
+
+
+def _snap_logo_to_visual_position(session: dict, cfg: dict, layer: dict, sid: str) -> None:
+    """On the first d-pad move, snap x/y to the actual rendered position so there's no jump."""
+    edit_id  = session.get("edit_style") or session.get("image_style", "")
+    edit_cfg = cfg.get("edit_styles", {}).get(edit_id) or cfg.get("image_styles", {}).get(edit_id, {})
+    logo_pos = edit_cfg.get("logo_pos", "")
+    if not logo_pos:
+        return  # no preset — stored x/y is already the source of truth
+    logo_pad = edit_cfg.get("logo_padding", 44)
+    logo_max = edit_cfg.get("logo_max", [160, 90])
+    max_w = layer.get("width") or logo_max[0]
+    max_h = layer.get("height") or logo_max[1]
+    padding = 64 if edit_cfg.get("layout") == "split" else logo_pad
+    try:
+        logo_path = SESSIONS_DIR / sid / "assets" / "logo.png"
+        if logo_path.exists():
+            logo_img = Image.open(str(logo_path)).convert("RGBA")
+            scale = min(max_w / logo_img.width, max_h / logo_img.height)
+            lw = max(1, round(logo_img.width * scale))
+        else:
+            lw = max_w  # fallback estimate
+        if logo_pos == "top_right":
+            layer["x"] = POST_WIDTH - padding - lw
+            layer["y"] = padding
+        elif logo_pos == "top_left":
+            layer["x"] = padding
+            layer["y"] = padding
+    except Exception:
+        pass  # if reading fails, proceed with whatever x/y is stored
+
+
+def _sync_logo_position(session: dict, edit_cfg: dict) -> None:
+    """Initialize logo_layer x/y from the edit style preset so d-pad moves from the correct visual position.
+    Uses logo_max as a size estimate — the upload handler refines this with actual image dimensions."""
+    logo_pos = edit_cfg.get("logo_pos", "")
+    logo_max = edit_cfg.get("logo_max", [160, 90])
+    ll = session.get("logo_layer", {})
+    if ll.get("position_override"):
+        return  # user has manually positioned it — don't reset
+    # Split layouts use fixed PADDING=64; others use logo_padding from config
+    padding = 64 if edit_cfg.get("layout") == "split" else edit_cfg.get("logo_padding", 44)
+    if logo_pos == "top_right":
+        ll["x"] = POST_WIDTH - padding - logo_max[0]
+        ll["y"] = padding
+    elif logo_pos == "top_left":
+        ll["x"] = padding
+        ll["y"] = padding
+    session["logo_layer"] = ll
+
 @router.post("/api/session/{sid}/move")
 async def move_layer(request: Request, sid: str):
     cfg = request.app.state.config
@@ -259,13 +318,27 @@ async def move_layer(request: Request, sid: str):
 
     layer_name = f"{layer_key}_layer"
     layer = session.get(layer_name, {})
-    layer["x"] = max(0, layer.get("x", 540) + dx)
-    layer["y"] = max(0, layer.get("y", 300) + dy)
-    session[layer_name] = layer
 
+    if layer_key in _TEXT_LAYERS:
+        # For text layers in non-legacy zones, track as offsets from the computed position
+        layer["x_offset"] = layer.get("x_offset", 0) + dx
+        layer["y_offset"] = layer.get("y_offset", 0) + dy
+        # Also update absolute coords for legacy-mode compatibility
+        layer["x"] = layer.get("x", 540) + dx
+        layer["y"] = layer.get("y", 300) + dy
+    else:
+        if layer_key == "logo" and not layer.get("position_override"):
+            # First move: snap to actual visual position so d-pad is relative to where the logo appears
+            _snap_logo_to_visual_position(session, cfg, layer, sid)
+        layer["x"] = max(0, layer.get("x", 54) + dx)
+        layer["y"] = max(0, layer.get("y", 54) + dy)
+        if layer_key == "logo":
+            layer["position_override"] = True
+
+    session[layer_name] = layer
     sm.save_session(session)
     _recompose(session, cfg, sid)
-    return {"ok": True, "x": layer["x"], "y": layer["y"], "ts": int(time.time())}
+    return {"ok": True, "x": layer.get("x"), "y": layer.get("y"), "ts": int(time.time())}
 
 
 # ── AJAX: font size ───────────────────────────────────────────────────────────
@@ -482,12 +555,19 @@ async def change_edit_style(request: Request, sid: str):
 
     # Sync text colors to the new layout's text_color_mode
     palette = cfg["color_palettes"].get(session["palette_id"], {})
-    if edit_cfg.get("text_color_mode") == "dark":
+    text_color_mode = edit_cfg.get("text_color_mode", "white")
+    if text_color_mode == "dark":
         session["headline_layer"]["color"] = palette.get("primary", "#1a2e55")
         session["body_layer"]["color"]     = palette.get("secondary", "#4A5568")
+    elif text_color_mode == "white_pure":
+        session["headline_layer"]["color"] = "#FFFFFF"
+        session["body_layer"]["color"]     = "#F2F2F2"
     else:
         session["headline_layer"]["color"] = palette.get("text_primary", "#FFFFFF")
         session["body_layer"]["color"]     = palette.get("text_secondary", "#CCCCCC")
+
+    # Reset logo position for new layout (unless user has manually positioned it)
+    _sync_logo_position(session, edit_cfg)
 
     sm.save_session(session)
     _recompose(session, cfg, sid)

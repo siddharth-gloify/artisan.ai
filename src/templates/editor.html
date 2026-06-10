@@ -127,6 +127,14 @@
               </div>
               <button class="dpad-btn" data-action="move" data-layer="logo" data-dx="0" data-dy="10">▼</button>
             </div>
+            <label class="ctrl-label mt">Size</label>
+            <div class="size-ctrl">
+              <button class="btn btn-xs" data-action="assetsize" data-layer="logo" data-dw="-20" data-dh="-20">−</button>
+              <span class="size-display">Logo</span>
+              <button class="btn btn-xs" data-action="assetsize" data-layer="logo" data-dw="20" data-dh="20">+</button>
+            </div>
+            <label class="ctrl-label mt">Visibility</label>
+            <button class="btn btn-xs btn-secondary" data-action="toggle" data-layer="logo">Toggle</button>
             {% else %}
             <p class="no-asset-hint">No logo uploaded</p>
             {% endif %}
@@ -154,6 +162,14 @@
               </div>
               <button class="dpad-btn" data-action="move" data-layer="header" data-dx="0" data-dy="10">▼</button>
             </div>
+            <label class="ctrl-label mt">Height</label>
+            <div class="size-ctrl">
+              <button class="btn btn-xs" data-action="assetsize" data-layer="header" data-dw="0" data-dh="-10">−</button>
+              <span class="size-display">H</span>
+              <button class="btn btn-xs" data-action="assetsize" data-layer="header" data-dw="0" data-dh="10">+</button>
+            </div>
+            <label class="ctrl-label mt">Visibility</label>
+            <button class="btn btn-xs btn-secondary" data-action="toggle" data-layer="header">Toggle</button>
             {% else %}
             <p class="no-asset-hint">No header uploaded</p>
             {% endif %}
@@ -181,6 +197,14 @@
               </div>
               <button class="dpad-btn" data-action="move" data-layer="footer" data-dx="0" data-dy="10">▼</button>
             </div>
+            <label class="ctrl-label mt">Height</label>
+            <div class="size-ctrl">
+              <button class="btn btn-xs" data-action="assetsize" data-layer="footer" data-dw="0" data-dh="-10">−</button>
+              <span class="size-display">H</span>
+              <button class="btn btn-xs" data-action="assetsize" data-layer="footer" data-dw="0" data-dh="10">+</button>
+            </div>
+            <label class="ctrl-label mt">Visibility</label>
+            <button class="btn btn-xs btn-secondary" data-action="toggle" data-layer="footer">Toggle</button>
             {% else %}
             <p class="no-asset-hint">No footer uploaded</p>
             {% endif %}
@@ -246,9 +270,9 @@
         <div class="form-group mt">
           <label class="ctrl-label">Image style</label>
           <select class="form-select" id="regenStyleSelect">
-            {% for key, style in image_styles.items() %}
-            <option value="{{ key }}" {{ "selected" if key == session.image_style else "" }}>
-              {{ style.name }}
+            {% for key, itype in image_types.items() %}
+            <option value="{{ key }}" {{ "selected" if key == session.get("image_type", session.image_style) else "" }}>
+              {{ itype.name }}
             </option>
             {% endfor %}
           </select>

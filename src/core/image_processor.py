@@ -123,11 +123,20 @@ def _save_data_url(data_url: str, path: Path) -> None:
 
 
 def _resize_to(path: Path, width: int, height: int) -> None:
-    """Resize the saved image to the target canvas size."""
+    """Cover-crop the saved image to the target canvas size.
+    Scales to fill, then center-crops — never stretches/distorts the photo
+    (models often return square images; a plain resize would warp faces)."""
     try:
         with Image.open(path) as img:
             if img.size != (width, height):
-                img = img.convert("RGB").resize((width, height), Image.LANCZOS)
+                img = img.convert("RGB")
+                scale = max(width / img.width, height / img.height)
+                new_w = max(width,  round(img.width * scale))
+                new_h = max(height, round(img.height * scale))
+                img = img.resize((new_w, new_h), Image.LANCZOS)
+                left = (new_w - width) // 2
+                top  = (new_h - height) // 2
+                img = img.crop((left, top, left + width, top + height))
                 img.save(str(path), "PNG")
     except Exception as exc:
         log.warning("Resize failed: %s", exc)
