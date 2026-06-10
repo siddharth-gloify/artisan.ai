@@ -1,0 +1,452 @@
+{% extends "base.html" %}
+{% block title %}PostForge Editor — {{ session.topic }}{% endblock %}
+
+{% block content %}
+<div class="editor-page" data-sid="{{ session.session_id }}">
+
+  <!-- Top bar -->
+  <div class="editor-topbar">
+    <div class="editor-breadcrumb">
+      <a href="/">← New Post</a>
+      <span>/ {{ session.topic | truncate(40) }}</span>
+    </div>
+    <div class="editor-actions">
+      <button class="btn btn-sm" id="regenImageBtn">🎨 Regen Image</button>
+      <a class="btn btn-primary" href="/api/session/{{ session.session_id }}/export" download>
+        ⬇️ Download PNG
+      </a>
+    </div>
+  </div>
+
+  <!-- Main editor layout -->
+  <div class="editor-layout">
+
+    <!-- ── Left: Controls panel ──────────────────────────────────────────── -->
+    <aside class="controls-panel">
+
+      <!-- Caption section -->
+      <div class="ctrl-section">
+        <div class="ctrl-section-header">
+          <h3>📝 Caption</h3>
+          <button class="btn btn-xs" id="regenCaptionBtn" title="Regenerate caption">↻ Regen</button>
+        </div>
+
+        <!-- Headline -->
+        <div class="text-ctrl-group" data-layer="headline">
+          <label class="ctrl-label">Headline</label>
+          <textarea class="ctrl-textarea" id="headlineText" rows="2"
+            data-layer="headline">{{ session.headline_layer.text }}</textarea>
+        </div>
+
+        <!-- Body -->
+        <div class="text-ctrl-group" data-layer="body">
+          <label class="ctrl-label">Body</label>
+          <textarea class="ctrl-textarea" id="bodyText" rows="4"
+            data-layer="body">{{ session.body_layer.text }}</textarea>
+        </div>
+
+        <!-- Hashtags -->
+        <div class="text-ctrl-group" data-layer="hashtag">
+          <label class="ctrl-label">Hashtags</label>
+          <textarea class="ctrl-textarea" id="hashtagText" rows="2"
+            data-layer="hashtag">{{ session.hashtag_layer.text }}</textarea>
+        </div>
+      </div>
+
+      <!-- Text layer controls -->
+      <div class="ctrl-section">
+        <h3>✏️ Text Controls</h3>
+
+        <div class="layer-tabs">
+          <button class="layer-tab active" data-layer="headline">Headline</button>
+          <button class="layer-tab" data-layer="body">Body</button>
+          <button class="layer-tab" data-layer="hashtag">Hashtags</button>
+        </div>
+
+        <div class="ctrl-block">
+          <label class="ctrl-label">Position</label>
+          <div class="dpad">
+            <button class="dpad-btn" data-action="move" data-layer="headline" data-dx="0" data-dy="-10">▲</button>
+            <div class="dpad-mid">
+              <button class="dpad-btn" data-action="move" data-layer="headline" data-dx="-10" data-dy="0">◀</button>
+              <span class="dpad-center">✛</span>
+              <button class="dpad-btn" data-action="move" data-layer="headline" data-dx="10" data-dy="0">▶</button>
+            </div>
+            <button class="dpad-btn" data-action="move" data-layer="headline" data-dx="0" data-dy="10">▼</button>
+          </div>
+
+          <label class="ctrl-label mt">Font Size</label>
+          <div class="size-ctrl">
+            <button class="btn btn-xs" data-action="fontsize" data-layer="headline" data-delta="-2">−</button>
+            <span class="size-display" id="headline-fontsize">{{ session.headline_layer.font_size }}</span>
+            <button class="btn btn-xs" data-action="fontsize" data-layer="headline" data-delta="2">+</button>
+          </div>
+
+          <label class="ctrl-label mt">Text Color</label>
+          <div class="color-picker-row">
+            {% set pal_colors = [palette.primary, palette.secondary, palette.accent, palette.text_primary, palette.text_secondary, "#FFFFFF", "#000000", "#FFDD00", "#FF4444"] %}
+            {% for c in pal_colors %}
+            <button class="color-dot" data-action="color" data-layer="headline" data-color="{{ c }}"
+                    style="background:{{ c }};" title="{{ c }}"></button>
+            {% endfor %}
+            <input type="color" class="custom-color-input" data-layer="headline" title="Custom color" />
+          </div>
+
+          <label class="ctrl-label mt">Visibility</label>
+          <button class="btn btn-xs toggle-vis" data-action="toggle" data-layer="headline">
+            👁 Toggle
+          </button>
+        </div>
+      </div>
+
+      <!-- Asset controls -->
+      <div class="ctrl-section">
+        <h3>🗂️ Assets</h3>
+
+        <div class="asset-ctrl-row">
+          <div class="asset-ctrl-block" data-asset="logo">
+            <div class="asset-ctrl-header">
+              <span>🏷️ Logo</span>
+              <label class="btn btn-xs upload-inline">
+                Upload <input type="file" class="asset-file-input" data-type="logo" accept="image/*" hidden />
+              </label>
+              {% if session.has_logo %}
+              <button class="btn btn-xs btn-danger" data-action="remove-asset" data-type="logo">✕</button>
+              {% endif %}
+            </div>
+            {% if session.has_logo %}
+            <div class="dpad mini-dpad">
+              <button class="dpad-btn" data-action="move" data-layer="logo" data-dx="0" data-dy="-10">▲</button>
+              <div class="dpad-mid">
+                <button class="dpad-btn" data-action="move" data-layer="logo" data-dx="-10" data-dy="0">◀</button>
+                <span class="dpad-center">✛</span>
+                <button class="dpad-btn" data-action="move" data-layer="logo" data-dx="10" data-dy="0">▶</button>
+              </div>
+              <button class="dpad-btn" data-action="move" data-layer="logo" data-dx="0" data-dy="10">▼</button>
+            </div>
+            <div class="size-ctrl">
+              <button class="btn btn-xs" data-action="assetsize" data-layer="logo" data-dw="-10" data-dh="-10">−</button>
+              <span>Size</span>
+              <button class="btn btn-xs" data-action="assetsize" data-layer="logo" data-dw="10" data-dh="10">+</button>
+            </div>
+            {% else %}
+            <p class="no-asset-hint">No logo uploaded</p>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="asset-ctrl-row">
+          <div class="asset-ctrl-block" data-asset="header">
+            <div class="asset-ctrl-header">
+              <span>🎯 Header</span>
+              <label class="btn btn-xs upload-inline">
+                Upload <input type="file" class="asset-file-input" data-type="header" accept="image/*" hidden />
+              </label>
+              {% if session.has_header %}
+              <button class="btn btn-xs btn-danger" data-action="remove-asset" data-type="header">✕</button>
+              {% endif %}
+            </div>
+            {% if session.has_header %}
+            <div class="dpad mini-dpad">
+              <button class="dpad-btn" data-action="move" data-layer="header" data-dx="0" data-dy="-10">▲</button>
+              <div class="dpad-mid">
+                <button class="dpad-btn" data-action="move" data-layer="header" data-dx="-10" data-dy="0">◀</button>
+                <span class="dpad-center">✛</span>
+                <button class="dpad-btn" data-action="move" data-layer="header" data-dx="10" data-dy="0">▶</button>
+              </div>
+              <button class="dpad-btn" data-action="move" data-layer="header" data-dx="0" data-dy="10">▼</button>
+            </div>
+            {% else %}
+            <p class="no-asset-hint">No header uploaded</p>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="asset-ctrl-row">
+          <div class="asset-ctrl-block" data-asset="footer">
+            <div class="asset-ctrl-header">
+              <span>📌 Footer</span>
+              <label class="btn btn-xs upload-inline">
+                Upload <input type="file" class="asset-file-input" data-type="footer" accept="image/*" hidden />
+              </label>
+              {% if session.has_footer %}
+              <button class="btn btn-xs btn-danger" data-action="remove-asset" data-type="footer">✕</button>
+              {% endif %}
+            </div>
+            {% if session.has_footer %}
+            <div class="dpad mini-dpad">
+              <button class="dpad-btn" data-action="move" data-layer="footer" data-dx="0" data-dy="-10">▲</button>
+              <div class="dpad-mid">
+                <button class="dpad-btn" data-action="move" data-layer="footer" data-dx="-10" data-dy="0">◀</button>
+                <span class="dpad-center">✛</span>
+                <button class="dpad-btn" data-action="move" data-layer="footer" data-dx="10" data-dy="0">▶</button>
+              </div>
+              <button class="dpad-btn" data-action="move" data-layer="footer" data-dx="0" data-dy="10">▼</button>
+            </div>
+            {% else %}
+            <p class="no-asset-hint">No footer uploaded</p>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Custom Background -->
+        <div class="asset-ctrl-block">
+          <div class="asset-ctrl-header">
+            <span>🖼️ Background</span>
+            <label class="btn btn-xs upload-inline">
+              Upload <input type="file" class="asset-file-input" data-type="background" accept="image/*" hidden />
+            </label>
+            {% if session.has_custom_bg %}
+            <button class="btn btn-xs btn-danger" data-action="remove-asset" data-type="background">✕</button>
+            {% endif %}
+          </div>
+          <p class="no-asset-hint">{{ "Custom background active" if session.has_custom_bg else "Using AI / gradient background" }}</p>
+        </div>
+      </div>
+
+      <!-- Regen controls -->
+      <div class="ctrl-section">
+        <h3>🔄 Regenerate</h3>
+        <div class="form-group">
+          <label class="ctrl-label">Caption Tone</label>
+          <select class="form-select" id="regenToneSelect">
+            {% for key, tone in caption_tones.items() %}
+            <option value="{{ key }}" {{ "selected" if key == session.caption_tone else "" }}>
+              {{ tone.emoji }} {{ tone.name }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+        <button class="btn btn-secondary w-full" id="regenCaptionBtn2">↻ Regen Caption</button>
+
+        <div class="form-group mt">
+          <label class="ctrl-label">Image Style</label>
+          <select class="form-select" id="regenStyleSelect">
+            {% for key, style in image_styles.items() %}
+            <option value="{{ key }}" {{ "selected" if key == session.image_style else "" }}>
+              {{ style.name }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <label class="ctrl-label mt">Image Quality</label>
+        <div class="tier-mini-grid">
+          <button type="button" class="tier-mini-btn {{ 'active' if session.get('image_tier','normal') == 'normal' else '' }}"
+                  data-tier="normal">⚡ Normal</button>
+          <button type="button" class="tier-mini-btn {{ 'active' if session.get('image_tier','normal') == 'pro' else '' }}"
+                  data-tier="pro">✦ Pro</button>
+          <button type="button" class="tier-mini-btn {{ 'active' if session.get('image_tier','normal') == 'max' else '' }}"
+                  data-tier="max">★ Max</button>
+        </div>
+        <input type="hidden" id="selectedImageTier" value="{{ session.get('image_tier', 'normal') }}" />
+
+        <button class="btn btn-secondary w-full" id="regenImageBtn2">🎨 Regen Image</button>
+      </div>
+
+    </aside>
+
+    <!-- ── Right: Preview ─────────────────────────────────────────────────── -->
+    <div class="preview-panel">
+      <div class="preview-container">
+        <img class="preview-img" id="previewImg"
+             src="/files/sessions/{{ session.session_id }}/composed.png?t={{ ts }}"
+             alt="Composed post" />
+        <div class="preview-loading" id="previewLoading" style="display:none;">
+          <div class="spinner-lg"></div>
+          <span>Recomposing…</span>
+        </div>
+      </div>
+      <div class="preview-meta">
+        <span>1080 × 1350 px</span>
+        <span id="lastUpdated">Ready</span>
+      </div>
+    </div>
+
+  </div><!-- /editor-layout -->
+</div><!-- /editor-page -->
+{% endblock %}
+
+{% block scripts %}
+<script>
+const SID = "{{ session.session_id }}";
+let activeLayer = "headline";
+let debounceTimer = null;
+
+// ── Layer tab switching ────────────────────────────────────────────────────
+document.querySelectorAll(".layer-tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".layer-tab").forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+    activeLayer = tab.dataset.layer;
+    updateDpadLayer(activeLayer);
+  });
+});
+
+function updateDpadLayer(layer) {
+  document.querySelectorAll("[data-action='move']").forEach(btn => {
+    if (btn.closest(".ctrl-block")) btn.dataset.layer = layer;
+  });
+  document.querySelectorAll("[data-action='fontsize']").forEach(btn => {
+    if (btn.closest(".ctrl-block")) btn.dataset.layer = layer;
+  });
+  document.querySelectorAll("[data-action='color']").forEach(btn => {
+    if (btn.closest(".ctrl-block")) btn.dataset.layer = layer;
+  });
+  document.querySelectorAll(".custom-color-input").forEach(inp => {
+    if (inp.closest(".ctrl-block")) inp.dataset.layer = layer;
+  });
+  document.querySelectorAll("[data-action='toggle']").forEach(btn => {
+    if (btn.closest(".ctrl-block")) btn.dataset.layer = layer;
+  });
+}
+
+// ── AJAX helper ────────────────────────────────────────────────────────────
+async function api(path, body) {
+  showLoading();
+  try {
+    const r = await fetch(path, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    const data = await r.json();
+    if (data.ts) refreshPreview(data.ts);
+    return data;
+  } catch(e) {
+    console.error(e);
+  } finally {
+    hideLoading();
+  }
+}
+
+function showLoading() {
+  document.getElementById("previewLoading").style.display = "flex";
+}
+function hideLoading() {
+  document.getElementById("previewLoading").style.display = "none";
+}
+function refreshPreview(ts) {
+  const img = document.getElementById("previewImg");
+  img.src = `/files/sessions/${SID}/composed.png?t=${ts || Date.now()}`;
+  document.getElementById("lastUpdated").textContent = "Updated " + new Date().toLocaleTimeString();
+}
+
+// ── Move / fontsize / color / toggle buttons ───────────────────────────────
+document.addEventListener("click", async (e) => {
+  const btn = e.target.closest("[data-action]");
+  if (!btn) return;
+  const action = btn.dataset.action;
+  const layer = btn.dataset.layer;
+
+  if (action === "move") {
+    const dx = parseInt(btn.dataset.dx || 0);
+    const dy = parseInt(btn.dataset.dy || 0);
+    await api(`/api/session/${SID}/move`, { layer, dx, dy });
+  }
+  if (action === "fontsize") {
+    const delta = parseInt(btn.dataset.delta || 2);
+    const res = await api(`/api/session/${SID}/fontsize`, { layer, delta });
+    if (res?.font_size) {
+      const display = document.getElementById(`${layer}-fontsize`);
+      if (display) display.textContent = res.font_size;
+    }
+  }
+  if (action === "color") {
+    await api(`/api/session/${SID}/color`, { layer, color: btn.dataset.color });
+  }
+  if (action === "toggle") {
+    await api(`/api/session/${SID}/toggle`, { layer });
+  }
+  if (action === "assetsize") {
+    const dw = parseInt(btn.dataset.dw || 0);
+    const dh = parseInt(btn.dataset.dh || 0);
+    await api(`/api/session/${SID}/assetsize`, { layer, dw, dh });
+  }
+  if (action === "remove-asset") {
+    if (!confirm(`Remove ${btn.dataset.type}?`)) return;
+    await fetch(`/api/session/${SID}/upload/${btn.dataset.type}`, { method: "DELETE" });
+    location.reload();
+  }
+});
+
+// ── Custom color picker ────────────────────────────────────────────────────
+document.querySelectorAll(".custom-color-input").forEach(inp => {
+  inp.addEventListener("change", () => {
+    api(`/api/session/${SID}/color`, { layer: inp.dataset.layer, color: inp.value });
+  });
+});
+
+// ── Text textarea debounce ─────────────────────────────────────────────────
+["headline","body","hashtag"].forEach(layer => {
+  const el = document.getElementById(`${layer}Text`);
+  if (!el) return;
+  el.addEventListener("input", () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      api(`/api/session/${SID}/text`, { layer, text: el.value });
+    }, 600);
+  });
+});
+
+// ── Regen caption ──────────────────────────────────────────────────────────
+async function regenCaption() {
+  const tone = document.getElementById("regenToneSelect").value;
+  const res = await api(`/api/session/${SID}/regen-caption`, { caption_tone: tone });
+  if (res?.caption) {
+    document.getElementById("headlineText").value = res.caption.headline;
+    document.getElementById("bodyText").value = res.caption.body;
+    document.getElementById("hashtagText").value = res.caption.hashtags.join(" ");
+  }
+}
+document.getElementById("regenCaptionBtn")?.addEventListener("click", regenCaption);
+document.getElementById("regenCaptionBtn2")?.addEventListener("click", regenCaption);
+
+// ── Tier mini buttons ──────────────────────────────────────────────────────
+document.querySelectorAll(".tier-mini-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tier-mini-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById("selectedImageTier").value = btn.dataset.tier;
+  });
+});
+
+// ── Regen image ────────────────────────────────────────────────────────────
+async function regenImage() {
+  const style = document.getElementById("regenStyleSelect").value;
+  const tier  = document.getElementById("selectedImageTier").value;
+  await api(`/api/session/${SID}/regen-image`, { image_style: style, image_tier: tier });
+}
+document.getElementById("regenImageBtn")?.addEventListener("click", regenImage);
+document.getElementById("regenImageBtn2")?.addEventListener("click", regenImage);
+
+// ── Asset file uploads ─────────────────────────────────────────────────────
+document.querySelectorAll(".asset-file-input").forEach(input => {
+  input.addEventListener("change", async () => {
+    const type = input.dataset.type;
+    const file = input.files[0];
+    if (!file) return;
+    showLoading();
+    const form = new FormData();
+    form.append("file", file);
+    try {
+      const r = await fetch(`/api/session/${SID}/upload/${type}`, {
+        method: "POST",
+        body: form,
+      });
+      const data = await r.json();
+      if (data.ts) refreshPreview(data.ts);
+      // Reload to show new asset controls
+      setTimeout(() => location.reload(), 500);
+    } catch(e) {
+      console.error(e);
+    } finally {
+      hideLoading();
+    }
+  });
+});
+
+// ── Init: set correct dpad layer ──────────────────────────────────────────
+updateDpadLayer(activeLayer);
+</script>
+{% endblock %}

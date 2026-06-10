@@ -1,0 +1,309 @@
+caption_tones:
+  sarcastic:
+    id: sarcastic
+    name: "Sarcastic & Witty"
+    emoji: "😏"
+    description: "Sharp, clever, slightly cynical humor"
+    best_for: [tech, lifestyle, entertainment, personal_brand]
+    llm_prompt: |
+      Write a sarcastic, witty Instagram caption about: {topic}
+      Industry context: {industry}
+
+      Rules:
+      - Be clever and ironic, not mean-spirited
+      - Max 150 characters for body
+      - Max 8 words for headline
+      - 3-5 relevant hashtags
+
+      Return ONLY valid JSON:
+      {{"headline": "short punchy headline", "body": "the caption body", "hashtags": ["#tag1", "#tag2", "#tag3"]}}
+
+  casual_humorous:
+    id: casual_humorous
+    name: "Casual & Funny"
+    emoji: "😂"
+    description: "Lighthearted, fun, relatable humor"
+    best_for: [lifestyle, entertainment, personal_brand, wellness]
+    llm_prompt: |
+      Write a funny, lighthearted Instagram caption about: {topic}
+      Industry context: {industry}
+
+      Rules:
+      - Be playful and relatable, make people smile
+      - Max 150 characters for body
+      - Max 8 words for headline
+      - 3-5 relevant hashtags
+
+      Return ONLY valid JSON:
+      {{"headline": "short punchy headline", "body": "the caption body", "hashtags": ["#tag1", "#tag2", "#tag3"]}}
+
+  motivational:
+    id: motivational
+    name: "Motivational"
+    emoji: "💪"
+    description: "Inspiring, empowering, encouraging"
+    best_for: [fitness, wellness, business, personal_development]
+    llm_prompt: |
+      Write a motivational Instagram caption about: {topic}
+      Industry context: {industry}
+
+      Rules:
+      - Be inspiring, empowering, actionable
+      - Max 150 characters for body
+      - Max 8 words for headline
+      - 3-5 relevant hashtags
+
+      Return ONLY valid JSON:
+      {{"headline": "short punchy headline", "body": "the caption body", "hashtags": ["#tag1", "#tag2", "#tag3"]}}
+
+  inspirational_deep:
+    id: inspirational_deep
+    name: "Deep & Inspirational"
+    emoji: "✨"
+    description: "Thoughtful, philosophical, meaningful"
+    best_for: [wellness, lifestyle, personal_brand, spirituality]
+    llm_prompt: |
+      Write a deep, philosophical Instagram caption about: {topic}
+      Industry context: {industry}
+
+      Rules:
+      - Be thoughtful, meaningful, reflective
+      - Max 150 characters for body
+      - Max 8 words for headline
+      - 3-5 relevant hashtags
+
+      Return ONLY valid JSON:
+      {{"headline": "short punchy headline", "body": "the caption body", "hashtags": ["#tag1", "#tag2", "#tag3"]}}
+
+  call_to_action:
+    id: call_to_action
+    name: "Call to Action"
+    emoji: "🎯"
+    description: "Action-driven, commanding, persuasive"
+    best_for: [ecommerce, promotion, business, saas]
+    llm_prompt: |
+      Write a call-to-action Instagram caption about: {topic}
+      Industry context: {industry}
+
+      Rules:
+      - Be direct, persuasive, create urgency
+      - Max 150 characters for body
+      - Max 8 words for headline
+      - 3-5 relevant hashtags
+
+      Return ONLY valid JSON:
+      {{"headline": "short punchy headline", "body": "the caption body", "hashtags": ["#tag1", "#tag2", "#tag3"]}}
+
+  professional_formal:
+    id: professional_formal
+    name: "Professional & Formal"
+    emoji: "💼"
+    description: "Corporate, polished, authoritative"
+    best_for: [business, finance, legal, corporate]
+    llm_prompt: |
+      Write a professional Instagram caption about: {topic}
+      Industry context: {industry}
+
+      Rules:
+      - Be polished, authoritative, credible
+      - Max 150 characters for body
+      - Max 8 words for headline
+      - 3-5 relevant hashtags
+
+      Return ONLY valid JSON:
+      {{"headline": "short punchy headline", "body": "the caption body", "hashtags": ["#tag1", "#tag2", "#tag3"]}}
+
+  business_friendly:
+    id: business_friendly
+    name: "Business Friendly"
+    emoji: "🤝"
+    description: "Professional but approachable, warm"
+    best_for: [business, startup, saas, professional_services]
+    llm_prompt: |
+      Write a business-friendly Instagram caption about: {topic}
+      Industry context: {industry}
+
+      Rules:
+      - Be professional but warm and approachable
+      - Max 150 characters for body
+      - Max 8 words for headline
+      - 3-5 relevant hashtags
+
+      Return ONLY valid JSON:
+      {{"headline": "short punchy headline", "body": "the caption body", "hashtags": ["#tag1", "#tag2", "#tag3"]}}
+
+  expert_authority:
+    id: expert_authority
+    name: "Expert Authority"
+    emoji: "🎓"
+    description: "Knowledgeable, authoritative, thought-leading"
+    best_for: [education, business, saas, consulting]
+    llm_prompt: |
+      Write an expert/authority Instagram caption about: {topic}
+      Industry context: {industry}
+
+      Rules:
+      - Share knowledge confidently, establish thought leadership
+      - Max 150 characters for body
+      - Max 8 words for headline
+      - 3-5 relevant hashtags
+
+      Return ONLY valid JSON:
+      {{"headline": "short punchy headline", "body": "the caption body", "hashtags": ["#tag1", "#tag2", "#tag3"]}}
+
+  lifestyle_casual:
+    id: lifestyle_casual
+    name: "Lifestyle Casual"
+    emoji: "☀️"
+    description: "Relaxed, easy-going, natural"
+    best_for: [lifestyle, wellness, travel, food]
+    llm_prompt: |
+      Write a casual, relaxed Instagram caption about: {topic}
+      Industry context: {industry}
+
+      Rules:
+      - Be natural, authentic, easy-going
+      - Max 150 characters for body
+      - Max 8 words for headline
+      - 3-5 relevant hashtags
+
+      Return ONLY valid JSON:
+      {{"headline": "short punchy headline", "body": "the caption body", "hashtags": ["#tag1", "#tag2", "#tag3"]}}
+
+  relatable_personal:
+    id: relatable_personal
+    name: "Relatable & Personal"
+    emoji: "💕"
+    description: "Raw, authentic, vulnerable"
+    best_for: [personal_brand, lifestyle, wellness]
+    llm_prompt: |
+      Write a relatable, personal Instagram caption about: {topic}
+      Industry context: {industry}
+
+      Rules:
+      - Be authentic, vulnerable, genuinely human
+      - Max 150 characters for body
+      - Max 8 words for headline
+      - 3-5 relevant hashtags
+
+      Return ONLY valid JSON:
+      {{"headline": "short punchy headline", "body": "the caption body", "hashtags": ["#tag1", "#tag2", "#tag3"]}}
+
+  poetic_artistic:
+    id: poetic_artistic
+    name: "Poetic & Artistic"
+    emoji: "🎨"
+    description: "Lyrical, creative, expressive"
+    best_for: [creative, art, lifestyle, entertainment]
+    llm_prompt: |
+      Write a poetic, artistic Instagram caption about: {topic}
+      Industry context: {industry}
+
+      Rules:
+      - Be lyrical, expressive, use vivid language
+      - Max 150 characters for body
+      - Max 8 words for headline
+      - 3-5 relevant hashtags
+
+      Return ONLY valid JSON:
+      {{"headline": "short punchy headline", "body": "the caption body", "hashtags": ["#tag1", "#tag2", "#tag3"]}}
+
+  minimalist_simple:
+    id: minimalist_simple
+    name: "Minimalist & Simple"
+    emoji: "•"
+    description: "Short, simple, powerful. Less is more."
+    best_for: [luxury, lifestyle, tech, professional]
+    llm_prompt: |
+      Write a minimalist Instagram caption about: {topic}
+      Industry context: {industry}
+
+      Rules:
+      - Be concise and powerful, less is more
+      - Max 80 characters for body
+      - Max 5 words for headline
+      - 2-3 hashtags only
+
+      Return ONLY valid JSON:
+      {{"headline": "very short headline", "body": "concise body", "hashtags": ["#tag1", "#tag2"]}}
+
+  question_engaging:
+    id: question_engaging
+    name: "Question & Engagement"
+    emoji: "❓"
+    description: "Ask questions to drive engagement"
+    best_for: [community_building, engagement, business, lifestyle]
+    llm_prompt: |
+      Write an engaging question-based Instagram caption about: {topic}
+      Industry context: {industry}
+
+      Rules:
+      - Ask thought-provoking questions that drive comments
+      - Max 150 characters for body
+      - Max 8 words for headline
+      - 3-5 relevant hashtags
+
+      Return ONLY valid JSON:
+      {{"headline": "short punchy headline", "body": "the caption with question", "hashtags": ["#tag1", "#tag2", "#tag3"]}}
+
+  trendy_now:
+    id: trendy_now
+    name: "Trendy & Current"
+    emoji: "🔥"
+    description: "Current trends, viral language, zeitgeist"
+    best_for: [entertainment, youth, lifestyle, startup]
+    llm_prompt: |
+      Write a trendy, current Instagram caption about: {topic}
+      Industry context: {industry}
+
+      Rules:
+      - Use 2025 slang and viral language, stay relevant
+      - Max 150 characters for body
+      - Max 8 words for headline
+      - 3-5 trending hashtags
+
+      Return ONLY valid JSON:
+      {{"headline": "short punchy headline", "body": "the trendy caption", "hashtags": ["#tag1", "#tag2", "#tag3"]}}
+
+  storytelling_narrative:
+    id: storytelling_narrative
+    name: "Storytelling Narrative"
+    emoji: "📖"
+    description: "Tell a mini-story or narrative"
+    best_for: [lifestyle, personal_brand, entertainment, creative]
+    llm_prompt: |
+      Write a narrative/storytelling Instagram caption about: {topic}
+      Industry context: {industry}
+
+      Rules:
+      - Tell a compelling mini-story, make it sequential and captivating
+      - Max 150 characters for body
+      - Max 8 words for headline
+      - 3-5 relevant hashtags
+
+      Return ONLY valid JSON:
+      {{"headline": "short punchy headline", "body": "the story caption", "hashtags": ["#tag1", "#tag2", "#tag3"]}}
+
+  dark_humor:
+    id: dark_humor
+    name: "Dark Humor"
+    emoji: "😅"
+    description: "Edgy, dark comedy, slightly irreverent"
+    best_for: [creative, alternative, entertainment, personal_brand]
+    llm_prompt: |
+      Write a dark humor Instagram caption about: {topic}
+      Industry context: {industry}
+
+      Rules:
+      - Be edgy and irreverent but never offensive
+      - Max 150 characters for body
+      - Max 8 words for headline
+      - 3-5 relevant hashtags
+
+      Return ONLY valid JSON:
+      {{"headline": "short punchy headline", "body": "the dark humor caption", "hashtags": ["#tag1", "#tag2", "#tag3"]}}
+
+fallback_caption:
+  headline: "Making it happen"
+  body: "Every great post starts with a great idea. This is yours."
+  hashtags: ["#PostForge", "#Content", "#Instagram"]

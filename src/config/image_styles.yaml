@@ -1,0 +1,396 @@
+image_styles:
+  minimalist_white:
+    id: minimalist_white
+    name: "Minimalist White"
+    category: clean
+    description: "Clean lines, simple design, white background"
+    mood: "Professional, Modern, Calm"
+    best_for: [tech, business, wellness, saas]
+    width: 1080
+    height: 1350
+    typography_style: sans_serif_bold
+    trending_2025: true
+    image_prompt: "Clean minimalist white studio background, soft shadows, elegant composition, professional product photography, subtle geometric lines, 8k quality"
+    overlay_color: "#FFFFFF"
+    overlay_opacity: 0.0
+    text_shadow: false
+
+  minimalist_dark:
+    id: minimalist_dark
+    name: "Minimalist Dark"
+    category: clean
+    description: "Clean lines, simple design, dark background"
+    mood: "Sophisticated, Modern, Edgy"
+    best_for: [tech, luxury, creative, saas]
+    width: 1080
+    height: 1350
+    typography_style: sans_serif_bold
+    trending_2025: true
+    image_prompt: "Dark minimalist background, subtle gradient from black to dark navy, clean geometric elements, professional studio lighting, cinematic quality, 8k"
+    overlay_color: "#0A1729"
+    overlay_opacity: 0.4
+    text_shadow: true
+
+  maximalist_bold:
+    id: maximalist_bold
+    name: "Maximalist Bold"
+    category: bold
+    description: "Busier, eclectic, layered patterns, bold typography"
+    mood: "Energetic, Creative, Eye-catching"
+    best_for: [entertainment, fashion, lifestyle, creative]
+    width: 1080
+    height: 1350
+    typography_style: bold_geometric
+    trending_2025: true
+    image_prompt: "Bold maximalist composition, layered geometric patterns, vibrant contrasting colors, energetic chaotic design, visually coherent collage effect, high energy"
+    overlay_color: "#000000"
+    overlay_opacity: 0.2
+    text_shadow: true
+
+  neo_brutalism:
+    id: neo_brutalism
+    name: "Neo-Brutalism"
+    category: bold
+    description: "Bold geometric shapes, flat colors, raw, unpolished"
+    mood: "Rebellious, Raw, Authentic"
+    best_for: [creative, alternative, streetwear, tech]
+    width: 1080
+    height: 1350
+    typography_style: sans_serif_heavy
+    trending_2025: true
+    image_prompt: "Neo-brutalist graphic design, bold flat colors, thick black outlines, raw geometric shapes, punchy composition, high contrast, digital art style, rebellious aesthetic"
+    overlay_color: "#000000"
+    overlay_opacity: 0.1
+    text_shadow: false
+
+  retro_70s:
+    id: retro_70s
+    name: "Retro 70s"
+    category: vintage
+    description: "Warm earth tones, vintage textures, nostalgic vibes"
+    mood: "Warm, Nostalgic, Approachable"
+    best_for: [wellness, lifestyle, fashion, food]
+    width: 1080
+    height: 1350
+    typography_style: serif_retro
+    trending_2025: true
+    image_prompt: "1970s vintage aesthetic, warm earthy tones, retro film grain texture, nostalgic photography style, warm amber lighting, analog photography feel, groovy patterns"
+    overlay_color: "#C8690B"
+    overlay_opacity: 0.15
+    text_shadow: false
+
+  retro_y2k:
+    id: retro_y2k
+    name: "Y2K Pastel"
+    category: vintage
+    description: "Soft pastels, muted retro colors, playful 2000s aesthetic"
+    mood: "Playful, Nostalgic, Soft"
+    best_for: [beauty, lifestyle, fashion, personal_brand]
+    width: 1080
+    height: 1350
+    typography_style: rounded_playful
+    trending_2025: true
+    image_prompt: "Y2K aesthetic, soft pastel colors, iridescent chrome effects, early 2000s digital art, holographic gradients, bubbly shapes, glossy texture"
+    overlay_color: "#BDE0FF"
+    overlay_opacity: 0.1
+    text_shadow: false
+
+  gradient_vibrant:
+    id: gradient_vibrant
+    name: "Gradient Vibrant"
+    category: dynamic
+    description: "Bold color gradients, dynamic transitions, high energy"
+    mood: "Energetic, Modern, Eye-popping"
+    best_for: [startup, app, tech, entertainment]
+    width: 1080
+    height: 1350
+    typography_style: sans_serif_bold
+    trending_2025: true
+    image_prompt: "Vibrant gradient background, dynamic color transitions from deep purple to hot pink to orange, abstract digital art, high energy, smooth gradient mesh"
+    overlay_color: "#000000"
+    overlay_opacity: 0.1
+    text_shadow: true
+
+  gradient_soft:
+    id: gradient_soft
+    name: "Gradient Soft"
+    category: dynamic
+    description: "Soft color gradients, soothing transitions, calming"
+    mood: "Calm, Sophisticated, Gentle"
+    best_for: [wellness, lifestyle, beauty, app]
+    width: 1080
+    height: 1350
+    typography_style: sans_serif_medium
+    trending_2025: true
+    image_prompt: "Soft pastel gradient background, gentle color transitions from lavender to soft peach, airy and light atmosphere, modern minimal aesthetic, dreamy"
+    overlay_color: "#FFFFFF"
+    overlay_opacity: 0.05
+    text_shadow: false
+
+  three_d_modern:
+    id: three_d_modern
+    name: "3D Modern"
+    category: dimensional
+    description: "Layered 3D elements, depth effects, modern perspective"
+    mood: "Futuristic, Innovative, Technical"
+    best_for: [tech, saas, startup, app]
+    width: 1080
+    height: 1350
+    typography_style: sans_serif_bold
+    trending_2025: true
+    image_prompt: "Modern 3D render, abstract geometric 3D elements, depth and perspective, clean futuristic aesthetic, studio lighting, metallic surfaces, architectural"
+    overlay_color: "#000000"
+    overlay_opacity: 0.2
+    text_shadow: true
+
+  three_d_playful:
+    id: three_d_playful
+    name: "3D Playful"
+    category: dimensional
+    description: "Fun 3D elements, rounded shapes, playful perspective"
+    mood: "Fun, Creative, Approachable"
+    best_for: [app, game, entertainment, education]
+    width: 1080
+    height: 1350
+    typography_style: rounded_bold
+    trending_2025: true
+    image_prompt: "Playful 3D render, rounded colorful 3D shapes, fun isometric perspective, cartoon-like 3D elements, bright cheerful colors, toy-like aesthetic"
+    overlay_color: "#000000"
+    overlay_opacity: 0.05
+    text_shadow: false
+
+  retro_futuristic:
+    id: retro_futuristic
+    name: "Retro-Futuristic"
+    category: hybrid
+    description: "Vintage meets modern, metallic gradients, neon highlights"
+    mood: "Fresh, Familiar, Innovative"
+    best_for: [tech, fashion, lifestyle, creative]
+    width: 1080
+    height: 1350
+    typography_style: bold_geometric
+    trending_2025: true
+    image_prompt: "Retro-futuristic design, metallic chrome gradients, vintage sci-fi aesthetic, neon highlights on dark background, 80s synthwave visual style"
+    overlay_color: "#0A0014"
+    overlay_opacity: 0.3
+    text_shadow: true
+
+  handdrawn_authentic:
+    id: handdrawn_authentic
+    name: "Hand-drawn Authentic"
+    category: organic
+    description: "Hand-drawn doodles, imperfect strokes, raw human feel"
+    mood: "Authentic, Personal, Relatable"
+    best_for: [lifestyle, wellness, creative, personal_brand]
+    width: 1080
+    height: 1350
+    typography_style: handwritten_script
+    trending_2025: true
+    image_prompt: "Hand-drawn illustration style, organic imperfect lines, sketch-like texture, authentic handmade aesthetic, doodle art, watercolor accents"
+    overlay_color: "#F5F0EB"
+    overlay_opacity: 0.1
+    text_shadow: false
+
+  collage_artistic:
+    id: collage_artistic
+    name: "Collage Artistic"
+    category: organic
+    description: "Collaged elements, mixed media, layered composition"
+    mood: "Creative, Experimental, Artistic"
+    best_for: [creative, art, lifestyle, entertainment]
+    width: 1080
+    height: 1350
+    typography_style: mixed_fonts
+    trending_2025: true
+    image_prompt: "Artistic collage composition, layered mixed media elements, textured paper background, ripped magazine-style, abstract art collage"
+    overlay_color: "#000000"
+    overlay_opacity: 0.1
+    text_shadow: true
+
+  custom_illustration:
+    id: custom_illustration
+    name: "Custom Illustration"
+    category: illustration
+    description: "Custom illustrated style, dynamic and emotive"
+    mood: "Creative, Unique, Branded"
+    best_for: [business, education, startup, creative]
+    width: 1080
+    height: 1350
+    typography_style: sans_serif_medium
+    trending_2025: true
+    image_prompt: "Custom digital illustration, clean vector art style, professional branded illustration, dynamic composition, modern flat design with depth"
+    overlay_color: "#000000"
+    overlay_opacity: 0.05
+    text_shadow: false
+
+  cartoon_fun:
+    id: cartoon_fun
+    name: "Cartoon Fun"
+    category: illustration
+    description: "Cartoon aesthetic, playful characters, bright colors"
+    mood: "Fun, Playful, Youthful"
+    best_for: [entertainment, education, app, game]
+    width: 1080
+    height: 1350
+    typography_style: rounded_playful
+    trending_2025: true
+    image_prompt: "Fun cartoon illustration, bright primary colors, bold outlines, playful stylized scene, comic book aesthetic, vibrant and energetic"
+    overlay_color: "#000000"
+    overlay_opacity: 0.0
+    text_shadow: false
+
+  typography_centered:
+    id: typography_centered
+    name: "Typography Centered"
+    category: text_heavy
+    description: "Bold typography takes center stage, minimal imagery"
+    mood: "Modern, Quote-focused, Bold"
+    best_for: [motivation, quote_posts, announcement, business]
+    width: 1080
+    height: 1350
+    typography_style: sans_serif_ultra_bold
+    trending_2025: true
+    image_prompt: "Abstract minimal background, subtle texture, clean design, gradient depth, professional typography-focused layout, muted elegant tones"
+    overlay_color: "#000000"
+    overlay_opacity: 0.2
+    text_shadow: false
+
+  liquid_typography:
+    id: liquid_typography
+    name: "Liquid Typography"
+    category: text_heavy
+    description: "Melted, warped, wavy text effects"
+    mood: "Modern, Experimental, Trendy"
+    best_for: [creative, entertainment, tech, lifestyle]
+    width: 1080
+    height: 1350
+    typography_style: distorted_dynamic
+    trending_2025: true
+    image_prompt: "Liquid metal abstract background, fluid chrome metallic flows, iridescent surface, abstract liquid art, high gloss finish"
+    overlay_color: "#000000"
+    overlay_opacity: 0.15
+    text_shadow: true
+
+  promo_style:
+    id: promo_style
+    name: "Promo Style"
+    category: commerce
+    description: "High-impact text blocks, offers, layered design"
+    mood: "Sales-focused, Urgent, Action-driven"
+    best_for: [ecommerce, promotion, offer, startup]
+    width: 1080
+    height: 1350
+    typography_style: sans_serif_bold
+    trending_2025: true
+    image_prompt: "High-impact commercial photography style, product showcase background, marketing-focused composition, bold graphic design elements"
+    overlay_color: "#000000"
+    overlay_opacity: 0.3
+    text_shadow: true
+
+  carousel_storytelling:
+    id: carousel_storytelling
+    name: "Carousel Storytelling"
+    category: narrative
+    description: "Split-screen format, grid layout, sequential narrative"
+    mood: "Narrative, Engaging, Scrollable"
+    best_for: [tutorial, process, story, timeline]
+    width: 1080
+    height: 1350
+    typography_style: sans_serif_medium
+    trending_2025: true
+    image_prompt: "Editorial grid layout background, clean geometric sections, professional publication design, organized systematic composition"
+    overlay_color: "#FFFFFF"
+    overlay_opacity: 0.1
+    text_shadow: false
+
+  split_editorial_blue:
+    id: split_editorial_blue
+    name: "Split — Editorial Blue"
+    category: split
+    description: "Bold blue top zone with text, cinematic photo on the bottom"
+    mood: "Editorial, Bold, Professional"
+    best_for: [real_estate, business, news, finance, travel]
+    width: 1080
+    height: 1380
+    layout: split
+    photo_split: 0.42
+    typography_style: sans_serif_bold
+    trending_2025: true
+    image_prompt: "Cinematic wide-angle photography, professional photojournalism quality, ultra detailed, 8K resolution, no text, no words, no typography, no watermarks, no graphics overlaid, pure photographic scene"
+    overlay_color: "#000000"
+    overlay_opacity: 0.0
+    text_shadow: false
+
+  split_luxury_dark:
+    id: split_luxury_dark
+    name: "Split — Luxury Dark"
+    category: split
+    description: "Rich dark top zone with text, moody luxury photo on the bottom"
+    mood: "Luxurious, Sophisticated, Premium"
+    best_for: [luxury, real_estate, fashion, lifestyle, personal_brand]
+    width: 1080
+    height: 1380
+    layout: split
+    photo_split: 0.40
+    typography_style: sans_serif_bold
+    trending_2025: true
+    image_prompt: "Luxury lifestyle photography, moody cinematic lighting, editorial quality, rich deep tones, ultra detailed, 8K resolution, no text, no words, no typography, no watermarks, no overlays, pure photographic scene"
+    overlay_color: "#000000"
+    overlay_opacity: 0.0
+    text_shadow: false
+
+  split_vibrant_warm:
+    id: split_vibrant_warm
+    name: "Split — Vibrant Warm"
+    category: split
+    description: "Warm-toned top zone with text, vibrant lifestyle photo on the bottom"
+    mood: "Warm, Energetic, Lifestyle"
+    best_for: [lifestyle, food, travel, wellness, personal_brand]
+    width: 1080
+    height: 1380
+    layout: split
+    photo_split: 0.44
+    typography_style: sans_serif_medium
+    trending_2025: true
+    image_prompt: "Vibrant lifestyle photography, warm golden hour light, rich saturated colors, professional photography, ultra detailed, 8K resolution, no text, no words, no typography, no watermarks, no overlays, pure photographic scene"
+    overlay_color: "#000000"
+    overlay_opacity: 0.0
+    text_shadow: false
+
+style_categories:
+  clean:
+    label: "Clean & Minimal"
+    description: "Professional, organized, space-conscious"
+  bold:
+    label: "Bold & Energetic"
+    description: "Eye-catching, creative, statement-making"
+  vintage:
+    label: "Vintage & Nostalgic"
+    description: "Retro vibes, warm aesthetics, timeless"
+  dynamic:
+    label: "Dynamic & Modern"
+    description: "Gradients, movement, contemporary"
+  dimensional:
+    label: "3D & Layered"
+    description: "Depth, perspective, innovative"
+  organic:
+    label: "Organic & Authentic"
+    description: "Handmade, real, personal touch"
+  illustration:
+    label: "Illustrated"
+    description: "Custom art, creative, unique"
+  text_heavy:
+    label: "Typography First"
+    description: "Text-centric, quote-focused, bold type"
+  commerce:
+    label: "Promo & Commerce"
+    description: "Sales-driven, offers, action-focused"
+  narrative:
+    label: "Story-Focused"
+    description: "Sequential, carousel, storytelling"
+  hybrid:
+    label: "Hybrid"
+    description: "Mixed aesthetics, experimental"
+  split:
+    label: "Split Layout"
+    description: "Solid-color text zone on top, real photo on the bottom"

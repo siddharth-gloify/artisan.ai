@@ -1,0 +1,277 @@
+industries:
+  tech_innovation:
+    id: tech_innovation
+    name: "Tech & Innovation"
+    icon: "💻"
+    description: "Technology, AI, software, startups"
+    recommended_styles: [minimalist_dark, three_d_modern, typography_centered, gradient_vibrant, retro_futuristic]
+    recommended_tones: [expert_authority, trendy_now, business_friendly, question_engaging, sarcastic]
+    recommended_palettes: [tech_neon, dark_blue_tech, tech_ethereum, neon_cyberpunk]
+    recommended_fonts: [sans_serif_bold, futuristic_tech, bold_geometric]
+
+  wellness_health:
+    id: wellness_health
+    name: "Wellness & Health"
+    icon: "🧘"
+    description: "Fitness, meditation, mental health, yoga"
+    recommended_styles: [gradient_soft, handdrawn_authentic, typography_centered, minimalist_white]
+    recommended_tones: [motivational, inspirational_deep, relatable_personal, lifestyle_casual]
+    recommended_palettes: [wellness_soft, wellness_sage, wellness_coral, gradient_forest]
+    recommended_fonts: [rounded_playful, handwritten_script, sans_serif_medium]
+
+  fashion_beauty:
+    id: fashion_beauty
+    name: "Fashion & Beauty"
+    icon: "💄"
+    description: "Fashion, cosmetics, beauty, style"
+    recommended_styles: [minimalist_white, minimalist_dark, gradient_vibrant, typography_centered]
+    recommended_tones: [lifestyle_casual, poetic_artistic, trendy_now, minimalist_simple]
+    recommended_palettes: [luxury_blush, luxury_dark, lifestyle_pastel, gradient_sunset]
+    recommended_fonts: [serif_elegant, sans_serif_bold, rounded_playful]
+
+  food_beverage:
+    id: food_beverage
+    name: "Food & Beverage"
+    icon: "🍽️"
+    description: "Food, cooking, restaurants, recipes"
+    recommended_styles: [retro_70s, minimalist_white, carousel_storytelling, handdrawn_authentic]
+    recommended_tones: [lifestyle_casual, storytelling_narrative, casual_humorous, poetic_artistic]
+    recommended_palettes: [food_warm, food_fresh, retro_70s, lifestyle_warm]
+    recommended_fonts: [handwritten_script, serif_retro, sans_serif_medium]
+
+  lifestyle:
+    id: lifestyle
+    name: "Lifestyle"
+    icon: "☀️"
+    description: "Travel, daily life, personal moments"
+    recommended_styles: [collage_artistic, gradient_vibrant, retro_y2k, carousel_storytelling]
+    recommended_tones: [lifestyle_casual, relatable_personal, storytelling_narrative, casual_humorous]
+    recommended_palettes: [lifestyle_vibrant, lifestyle_warm, retro_y2k, gradient_sunset]
+    recommended_fonts: [sans_serif_medium, handwritten_script, mixed_fonts]
+
+  business_corporate:
+    id: business_corporate
+    name: "Business & Corporate"
+    icon: "💼"
+    description: "B2B, corporate, business growth"
+    recommended_styles: [minimalist_white, typography_centered, promo_style, minimalist_dark]
+    recommended_tones: [professional_formal, expert_authority, business_friendly, call_to_action]
+    recommended_palettes: [business_professional, business_modern, neutral_elegant, dark_blue_tech]
+    recommended_fonts: [sans_serif_bold, serif_elegant, sans_serif_ultra_bold]
+
+  entertainment:
+    id: entertainment
+    name: "Entertainment"
+    icon: "🎬"
+    description: "Gaming, music, movies, entertainment"
+    recommended_styles: [maximalist_bold, neo_brutalism, three_d_playful, cartoon_fun]
+    recommended_tones: [sarcastic, dark_humor, casual_humorous, trendy_now]
+    recommended_palettes: [creative_bold, neon_cyberpunk, lifestyle_vibrant, creative_soft]
+    recommended_fonts: [bold_geometric, distorted_dynamic, rounded_playful]
+
+  education_learning:
+    id: education_learning
+    name: "Education & Learning"
+    icon: "📚"
+    description: "Online courses, tutorials, education"
+    recommended_styles: [custom_illustration, carousel_storytelling, typography_centered, three_d_playful]
+    recommended_tones: [expert_authority, motivational, question_engaging, storytelling_narrative]
+    recommended_palettes: [business_modern, creative_soft, wellness_soft, neutral_elegant]
+    recommended_fonts: [sans_serif_medium, rounded_playful, serif_editorial]
+
+  personal_brand:
+    id: personal_brand
+    name: "Personal Brand"
+    icon: "👤"
+    description: "Influencers, creators, personal content"
+    recommended_styles: [handdrawn_authentic, gradient_vibrant, collage_artistic, retro_y2k]
+    recommended_tones: [relatable_personal, lifestyle_casual, storytelling_narrative, trendy_now]
+    recommended_palettes: [lifestyle_vibrant, retro_y2k, creative_soft, lifestyle_pastel]
+    recommended_fonts: [mixed_fonts, handwritten_script, rounded_playful]
+
+  ecommerce_promo:
+    id: ecommerce_promo
+    name: "Ecommerce & Promo"
+    icon: "🛍️"
+    description: "Products, offers, promotions, sales"
+    recommended_styles: [promo_style, minimalist_white, gradient_vibrant, typography_centered]
+    recommended_tones: [call_to_action, trendy_now, business_friendly, question_engaging]
+    recommended_palettes: [business_modern, neon_cyberpunk, gradient_sunset, lifestyle_vibrant]
+    recommended_fonts: [sans_serif_bold, sans_serif_ultra_bold, bold_geometric]
+
+font_styles:
+  sans_serif_bold:
+    id: sans_serif_bold
+    name: "Modern Bold"
+    category: sans_serif
+    headline_file: "arialbd.ttf"
+    body_file: "arial.ttf"
+    fallback_headline: "segoeuib.ttf"
+    fallback_body: "segoeui.ttf"
+
+  sans_serif_medium:
+    id: sans_serif_medium
+    name: "Segoe Clean"
+    category: sans_serif
+    headline_file: "segoeuib.ttf"
+    body_file: "segoeui.ttf"
+    fallback_headline: "arialbd.ttf"
+    fallback_body: "arial.ttf"
+
+  sans_serif_heavy:
+    id: sans_serif_heavy
+    name: "Tahoma Heavy"
+    category: sans_serif
+    headline_file: "tahomabd.ttf"
+    body_file: "tahoma.ttf"
+    fallback_headline: "arialbd.ttf"
+    fallback_body: "arial.ttf"
+
+  serif_elegant:
+    id: serif_elegant
+    name: "Palatino Elegant"
+    category: serif
+    headline_file: "palab.ttf"
+    body_file: "pala.ttf"
+    fallback_headline: "georgiab.ttf"
+    fallback_body: "georgia.ttf"
+
+  serif_retro:
+    id: serif_retro
+    name: "Garamond Retro"
+    category: serif
+    headline_file: "garabd.ttf"
+    body_file: "gara.ttf"
+    fallback_headline: "georgiab.ttf"
+    fallback_body: "georgia.ttf"
+
+  serif_editorial:
+    id: serif_editorial
+    name: "Georgia Editorial"
+    category: serif
+    headline_file: "georgiab.ttf"
+    body_file: "georgia.ttf"
+    fallback_headline: "garabd.ttf"
+    fallback_body: "gara.ttf"
+
+  bold_geometric:
+    id: bold_geometric
+    name: "Bahnschrift Geometric"
+    category: geometric
+    headline_file: "bahnschrift.ttf"
+    body_file: "calibrib.ttf"
+    fallback_headline: "arialbd.ttf"
+    fallback_body: "arial.ttf"
+
+  rounded_playful:
+    id: rounded_playful
+    name: "Calibri Playful"
+    category: rounded
+    headline_file: "calibrib.ttf"
+    body_file: "calibri.ttf"
+    fallback_headline: "arialbd.ttf"
+    fallback_body: "arial.ttf"
+
+  rounded_bold:
+    id: rounded_bold
+    name: "Trebuchet Rounded"
+    category: rounded
+    headline_file: "trebucbd.ttf"
+    body_file: "trebuc.ttf"
+    fallback_headline: "calibrib.ttf"
+    fallback_body: "calibri.ttf"
+
+  handwritten_script:
+    id: handwritten_script
+    name: "Ink Free Script"
+    category: script
+    headline_file: "inkfree.ttf"
+    body_file: "segoepr.ttf"
+    fallback_headline: "comic.ttf"
+    fallback_body: "georgia.ttf"
+
+  mixed_fonts:
+    id: mixed_fonts
+    name: "Comic + Georgia Mix"
+    category: mixed
+    headline_file: "comic.ttf"
+    body_file: "georgiab.ttf"
+    fallback_headline: "calibrib.ttf"
+    fallback_body: "georgia.ttf"
+
+  futuristic_tech:
+    id: futuristic_tech
+    name: "Consolas Tech"
+    category: tech
+    headline_file: "consolab.ttf"
+    body_file: "bahnschrift.ttf"
+    fallback_headline: "arialbd.ttf"
+    fallback_body: "arial.ttf"
+
+  distorted_dynamic:
+    id: distorted_dynamic
+    name: "Verdana Dynamic"
+    category: experimental
+    headline_file: "verdanab.ttf"
+    body_file: "tahomabd.ttf"
+    fallback_headline: "arialbd.ttf"
+    fallback_body: "arial.ttf"
+
+  sans_serif_ultra_bold:
+    id: sans_serif_ultra_bold
+    name: "Ultra Bold Impact"
+    category: sans_serif
+    headline_file: "impact.ttf"
+    body_file: "arialbd.ttf"
+    fallback_headline: "bahnschrift.ttf"
+    fallback_body: "segoeuib.ttf"
+
+  condensed_bold:
+    id: condensed_bold
+    name: "Condensed Bold"
+    category: condensed
+    headline_file: "impact.ttf"
+    body_file: "tahoma.ttf"
+    fallback_headline: "arialbd.ttf"
+    fallback_body: "arial.ttf"
+
+quick_start_templates:
+  viral_startup:
+    name: "Viral Startup"
+    industry: tech_innovation
+    image_style: gradient_vibrant
+    caption_tone: trendy_now
+    font_style: futuristic_tech
+    palette: neon_cyberpunk
+
+  wellness_inspiring:
+    name: "Wellness Inspiring"
+    industry: wellness_health
+    image_style: gradient_soft
+    caption_tone: motivational
+    font_style: rounded_playful
+    palette: wellness_soft
+
+  fashion_luxury:
+    name: "Fashion Luxury"
+    industry: fashion_beauty
+    image_style: minimalist_white
+    caption_tone: lifestyle_casual
+    font_style: serif_elegant
+    palette: luxury_blush
+
+  entertainment_bold:
+    name: "Entertainment Bold"
+    industry: entertainment
+    image_style: maximalist_bold
+    caption_tone: sarcastic
+    font_style: bold_geometric
+    palette: creative_bold
+
+  business_pro:
+    name: "Business Pro"
+    industry: business_corporate
+    image_style: typography_centered
+    caption_tone: expert_authority
+    font_style: sans_serif_bold
+    palette: business_professional

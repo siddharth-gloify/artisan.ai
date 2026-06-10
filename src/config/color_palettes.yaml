@@ -1,0 +1,325 @@
+palettes:
+  tech_neon:
+    id: tech_neon
+    name: "Tech Neon"
+    category: tech
+    primary: "#00FF41"
+    secondary: "#137DC5"
+    background: "#0A1729"
+    accent: "#00FFCC"
+    text_primary: "#FFFFFF"
+    text_secondary: "#AAAAAA"
+    gradient_end: "#0F2A4A"
+
+  dark_blue_tech:
+    id: dark_blue_tech
+    name: "Dark Blue Tech"
+    category: tech
+    primary: "#1E90FF"
+    secondary: "#0080FF"
+    background: "#0D1117"
+    accent: "#58A6FF"
+    text_primary: "#FFFFFF"
+    text_secondary: "#8B949E"
+    gradient_end: "#161B22"
+
+  tech_ethereum:
+    id: tech_ethereum
+    name: "Ethereum Dusk"
+    category: tech
+    primary: "#627EEA"
+    secondary: "#3C5FD6"
+    background: "#1A1B2E"
+    accent: "#A0B4FF"
+    text_primary: "#FFFFFF"
+    text_secondary: "#9AA5CE"
+    gradient_end: "#252642"
+
+  wellness_soft:
+    id: wellness_soft
+    name: "Wellness Soft"
+    category: wellness
+    primary: "#B8D4C8"
+    secondary: "#E8F0E9"
+    background: "#F5F0EB"
+    accent: "#8FAF9F"
+    text_primary: "#3D4F4A"
+    text_secondary: "#6B7F7A"
+    gradient_end: "#EAE4DC"
+
+  wellness_sage:
+    id: wellness_sage
+    name: "Wellness Sage"
+    category: wellness
+    primary: "#7D9B76"
+    secondary: "#B5C9B1"
+    background: "#F0F4EF"
+    accent: "#4A7A42"
+    text_primary: "#2C3E2D"
+    text_secondary: "#5A7055"
+    gradient_end: "#E3EDE2"
+
+  wellness_coral:
+    id: wellness_coral
+    name: "Wellness Coral"
+    category: wellness
+    primary: "#E8927C"
+    secondary: "#F5C4B8"
+    background: "#FFF7F5"
+    accent: "#C0604A"
+    text_primary: "#3A1810"
+    text_secondary: "#8A4A3A"
+    gradient_end: "#FAE8E4"
+
+  luxury_dark:
+    id: luxury_dark
+    name: "Luxury Dark"
+    category: luxury
+    primary: "#C9A84C"
+    secondary: "#A07830"
+    background: "#0D0D0D"
+    accent: "#E8D5A3"
+    text_primary: "#FFFFFF"
+    text_secondary: "#C9A84C"
+    gradient_end: "#1A1A1A"
+
+  luxury_blush:
+    id: luxury_blush
+    name: "Luxury Blush"
+    category: luxury
+    primary: "#C9848C"
+    secondary: "#E8C4C8"
+    background: "#FDF8F7"
+    accent: "#A05C64"
+    text_primary: "#2D1F22"
+    text_secondary: "#7A4D52"
+    gradient_end: "#F5E8EA"
+
+  luxury_minimalist:
+    id: luxury_minimalist
+    name: "Luxury Minimal"
+    category: luxury
+    primary: "#2C2C2C"
+    secondary: "#5A5A5A"
+    background: "#FAFAFA"
+    accent: "#C9A84C"
+    text_primary: "#1A1A1A"
+    text_secondary: "#5A5A5A"
+    gradient_end: "#F0F0F0"
+
+  business_professional:
+    id: business_professional
+    name: "Business Pro"
+    category: business
+    primary: "#1A3A5C"
+    secondary: "#2E6DA4"
+    background: "#FFFFFF"
+    accent: "#4A90D9"
+    text_primary: "#1A1A2E"
+    text_secondary: "#4A4A6A"
+    gradient_end: "#EEF3F9"
+
+  business_modern:
+    id: business_modern
+    name: "Business Modern"
+    category: business
+    primary: "#2D2D2D"
+    secondary: "#E63946"
+    background: "#F8F9FA"
+    accent: "#E63946"
+    text_primary: "#212529"
+    text_secondary: "#6C757D"
+    gradient_end: "#EDEFF2"
+
+  lifestyle_warm:
+    id: lifestyle_warm
+    name: "Lifestyle Warm"
+    category: lifestyle
+    primary: "#D4845A"
+    secondary: "#E8B89A"
+    background: "#FDF5EF"
+    accent: "#A05A38"
+    text_primary: "#3A1F0F"
+    text_secondary: "#7A4520"
+    gradient_end: "#F7E8DC"
+
+  lifestyle_vibrant:
+    id: lifestyle_vibrant
+    name: "Lifestyle Vibrant"
+    category: lifestyle
+    primary: "#FF6B6B"
+    secondary: "#FFE66D"
+    background: "#FFFFFF"
+    accent: "#4ECDC4"
+    text_primary: "#1A1A1A"
+    text_secondary: "#555555"
+    gradient_end: "#FFF5F5"
+
+  lifestyle_pastel:
+    id: lifestyle_pastel
+    name: "Y2K Pastel"
+    category: lifestyle
+    primary: "#B5C8F0"
+    secondary: "#F0B5C8"
+    background: "#FAFBFF"
+    accent: "#C8F0B5"
+    text_primary: "#2A2A4A"
+    text_secondary: "#5A5A7A"
+    gradient_end: "#EEF2FF"
+
+  creative_bold:
+    id: creative_bold
+    name: "Creative Bold"
+    category: creative
+    primary: "#FF3366"
+    secondary: "#00F5D4"
+    background: "#120A2A"
+    accent: "#FFD700"
+    text_primary: "#FFFFFF"
+    text_secondary: "#CCCCCC"
+    gradient_end: "#1E1040"
+
+  creative_soft:
+    id: creative_soft
+    name: "Creative Soft"
+    category: creative
+    primary: "#F72585"
+    secondary: "#7209B7"
+    background: "#FFF8FF"
+    accent: "#4CC9F0"
+    text_primary: "#240046"
+    text_secondary: "#7209B7"
+    gradient_end: "#EFE0FF"
+
+  neon_cyberpunk:
+    id: neon_cyberpunk
+    name: "Neon Cyberpunk"
+    category: neon
+    primary: "#FF00FF"
+    secondary: "#00FFFF"
+    background: "#0A0014"
+    accent: "#FFD700"
+    text_primary: "#FFFFFF"
+    text_secondary: "#FF00FF"
+    gradient_end: "#14001E"
+
+  retro_70s:
+    id: retro_70s
+    name: "Retro 70s"
+    category: retro
+    primary: "#C8690B"
+    secondary: "#E8A838"
+    background: "#F2E0C3"
+    accent: "#7A3B0C"
+    text_primary: "#2D1300"
+    text_secondary: "#5A2A05"
+    gradient_end: "#EAD0A8"
+
+  retro_y2k:
+    id: retro_y2k
+    name: "Y2K Chrome"
+    category: retro
+    primary: "#BDE0FF"
+    secondary: "#FFC2D1"
+    background: "#FFFAFF"
+    accent: "#B5EAD7"
+    text_primary: "#2A1A3A"
+    text_secondary: "#5A4A6A"
+    gradient_end: "#F5E8FF"
+
+  gradient_sunset:
+    id: gradient_sunset
+    name: "Sunset"
+    category: gradient
+    primary: "#FF6B6B"
+    secondary: "#FF8E53"
+    background: "#FF6B6B"
+    accent: "#FFFFFF"
+    text_primary: "#FFFFFF"
+    text_secondary: "#FFE8E0"
+    gradient_end: "#FFE66D"
+
+  gradient_ocean:
+    id: gradient_ocean
+    name: "Ocean"
+    category: gradient
+    primary: "#667EEA"
+    secondary: "#764BA2"
+    background: "#667EEA"
+    accent: "#FFFFFF"
+    text_primary: "#FFFFFF"
+    text_secondary: "#E0E8FF"
+    gradient_end: "#764BA2"
+
+  gradient_forest:
+    id: gradient_forest
+    name: "Forest"
+    category: gradient
+    primary: "#11998E"
+    secondary: "#38EF7D"
+    background: "#11998E"
+    accent: "#FFFFFF"
+    text_primary: "#FFFFFF"
+    text_secondary: "#E0FFF0"
+    gradient_end: "#38EF7D"
+
+  neutral_elegant:
+    id: neutral_elegant
+    name: "Neutral Elegant"
+    category: neutral
+    primary: "#8E9AAF"
+    secondary: "#CBC0D3"
+    background: "#EDEEF4"
+    accent: "#4A4E69"
+    text_primary: "#22223B"
+    text_secondary: "#4A4E69"
+    gradient_end: "#E2E4EE"
+
+  neutral_warm:
+    id: neutral_warm
+    name: "Neutral Warm"
+    category: neutral
+    primary: "#9E8A7E"
+    secondary: "#C9B5AA"
+    background: "#F5F0EC"
+    accent: "#6B5649"
+    text_primary: "#2D2018"
+    text_secondary: "#5A4035"
+    gradient_end: "#EDE5DF"
+
+  food_warm:
+    id: food_warm
+    name: "Food Warm"
+    category: food
+    primary: "#E05C1C"
+    secondary: "#F5A623"
+    background: "#FFF8F0"
+    accent: "#C04010"
+    text_primary: "#2A1005"
+    text_secondary: "#7A3010"
+    gradient_end: "#FFF0E0"
+
+  food_fresh:
+    id: food_fresh
+    name: "Food Fresh"
+    category: food
+    primary: "#4CAF50"
+    secondary: "#8BC34A"
+    background: "#F0FFF0"
+    accent: "#2E7D32"
+    text_primary: "#0A1F0A"
+    text_secondary: "#2E5930"
+    gradient_end: "#E0F5E0"
+
+categories:
+  tech: "Tech & Innovation"
+  wellness: "Wellness & Health"
+  luxury: "Luxury & Fashion"
+  business: "Business & Corporate"
+  lifestyle: "Lifestyle"
+  creative: "Creative & Entertainment"
+  neon: "Neon & Cyber"
+  retro: "Retro & Vintage"
+  gradient: "Gradient"
+  neutral: "Neutral & Minimal"
+  food: "Food & Beverage"

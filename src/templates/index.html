@@ -1,0 +1,390 @@
+{% extends "base.html" %}
+{% block title %}PostForge — Create Your Post{% endblock %}
+
+{% block content %}
+<div class="setup-page">
+  <!-- Hero -->
+  <div class="hero">
+    <h1 class="hero-title">AI-Powered Instagram Posts</h1>
+    <p class="hero-sub">Choose your style. Enter a topic. PostForge does the rest.</p>
+  </div>
+
+  <!-- Quick Starts -->
+  <section class="section">
+    <h2 class="section-title">Quick Start</h2>
+    <div class="quick-starts">
+      {% for key, tmpl in quick_starts.items() %}
+      <button class="quick-start-btn" data-template="{{ key }}"
+              data-industry="{{ tmpl.industry }}"
+              data-style="{{ tmpl.image_style }}"
+              data-tone="{{ tmpl.caption_tone }}"
+              data-palette="{{ tmpl.palette }}"
+              data-font="{{ tmpl.font_style }}">
+        {{ tmpl.name }}
+      </button>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- Main form -->
+  <form method="POST" action="/generate" id="setupForm" enctype="multipart/form-data">
+
+    <!-- Step 1: Industry -->
+    <section class="section" id="step-industry">
+      <div class="step-header">
+        <span class="step-badge">1</span>
+        <h2 class="section-title">Choose Your Industry</h2>
+      </div>
+      <div class="card-grid">
+        {% for key, ind in industries.items() %}
+        <label class="select-card" data-group="industry" data-value="{{ key }}">
+          <input type="radio" name="industry" value="{{ key }}" required hidden />
+          <span class="card-icon">{{ ind.icon }}</span>
+          <span class="card-name">{{ ind.name }}</span>
+          <span class="card-desc">{{ ind.description }}</span>
+        </label>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- Step 2: Image Style -->
+    <section class="section" id="step-style">
+      <div class="step-header">
+        <span class="step-badge">2</span>
+        <h2 class="section-title">Image Style</h2>
+        <span class="step-hint">Filtered for your industry</span>
+      </div>
+      <div class="style-filter-tabs">
+        <button type="button" class="filter-tab active" data-cat="all">All</button>
+        {% for cat_key, cat in style_categories.items() %}
+        <button type="button" class="filter-tab" data-cat="{{ cat_key }}">{{ cat.label }}</button>
+        {% endfor %}
+      </div>
+      <div class="card-grid style-grid">
+        {% for key, style in image_styles.items() %}
+        <label class="select-card style-card"
+               data-group="image_style" data-value="{{ key }}"
+               data-cat="{{ style.category }}"
+               data-industries="{{ style.best_for | join(',') }}">
+          <input type="radio" name="image_style" value="{{ key }}" required hidden />
+          <div class="style-preview" style="background: linear-gradient(135deg, #{{ loop.index0 * 31 % 255 | int }}4488, #8844{{ loop.index0 * 47 % 255 | int }});"></div>
+          <span class="card-name">{{ style.name }}</span>
+          <span class="card-desc">{{ style.mood }}</span>
+          {% if style.trending_2025 %}<span class="badge-trending">Trending</span>{% endif %}
+        </label>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- Step 2b: Image Model Tier -->
+    <section class="section" id="step-tier">
+      <div class="step-header">
+        <span class="step-badge" style="background:var(--surface-3);color:var(--text-2);">2b</span>
+        <h2 class="section-title">Image Quality</h2>
+      </div>
+      <div class="tier-grid">
+        <label class="tier-card selected" data-tier="normal">
+          <input type="radio" name="image_tier" value="normal" checked hidden />
+          <div class="tier-badge normal">Normal</div>
+          <div class="tier-model">gemini-2.5-flash</div>
+          <div class="tier-desc">Fast · Great for most posts</div>
+          <div class="tier-cost">⚡ Fastest</div>
+        </label>
+        <label class="tier-card" data-tier="pro">
+          <input type="radio" name="image_tier" value="pro" hidden />
+          <div class="tier-badge pro">Pro</div>
+          <div class="tier-model">gemini-3.1-flash</div>
+          <div class="tier-desc">Balanced quality &amp; speed</div>
+          <div class="tier-cost">✦ Recommended</div>
+        </label>
+        <label class="tier-card" data-tier="max">
+          <input type="radio" name="image_tier" value="max" hidden />
+          <div class="tier-badge max">Max</div>
+          <div class="tier-model">gemini-3-pro</div>
+          <div class="tier-desc">Highest quality output</div>
+          <div class="tier-cost">★ Best results</div>
+        </label>
+      </div>
+    </section>
+
+    <!-- Step 3: Caption Tone -->
+    <section class="section" id="step-tone">
+      <div class="step-header">
+        <span class="step-badge">3</span>
+        <h2 class="section-title">Caption Tone</h2>
+      </div>
+      <div class="card-grid tone-grid">
+        {% for key, tone in caption_tones.items() %}
+        <label class="select-card tone-card" data-group="caption_tone" data-value="{{ key }}">
+          <input type="radio" name="caption_tone" value="{{ key }}" required hidden />
+          <span class="tone-emoji">{{ tone.emoji }}</span>
+          <span class="card-name">{{ tone.name }}</span>
+          <span class="card-desc">{{ tone.description }}</span>
+        </label>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- Step 4: Color Palette -->
+    <section class="section" id="step-palette">
+      <div class="step-header">
+        <span class="step-badge">4</span>
+        <h2 class="section-title">Color Palette</h2>
+      </div>
+      <div class="palette-cat-tabs">
+        <button type="button" class="filter-tab active" data-pcat="all">All</button>
+        {% for cat_key, cat_name in palette_categories.items() %}
+        <button type="button" class="filter-tab" data-pcat="{{ cat_key }}">{{ cat_name }}</button>
+        {% endfor %}
+      </div>
+      <div class="palette-grid">
+        {% for key, pal in palettes.items() %}
+        <label class="palette-card" data-group="palette_id" data-value="{{ key }}"
+               data-pcat="{{ pal.category }}">
+          <input type="radio" name="palette_id" value="{{ key }}" required hidden />
+          <div class="palette-swatches">
+            <span class="swatch" style="background:{{ pal.background }};"></span>
+            <span class="swatch" style="background:{{ pal.primary }};"></span>
+            <span class="swatch" style="background:{{ pal.secondary }};"></span>
+            <span class="swatch" style="background:{{ pal.accent }};"></span>
+          </div>
+          <span class="palette-name">{{ pal.name }}</span>
+        </label>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- Step 5: Font Style -->
+    <section class="section" id="step-font">
+      <div class="step-header">
+        <span class="step-badge">5</span>
+        <h2 class="section-title">Font Style</h2>
+        <span class="step-hint">Auto-recommended based on your selections</span>
+      </div>
+      <div class="card-grid font-grid">
+        {% for key, fnt in font_styles.items() %}
+        <label class="select-card font-card" data-group="font_style" data-value="{{ key }}">
+          <input type="radio" name="font_style" value="{{ key }}" hidden />
+          <span class="font-preview {{ fnt.category }}">Aa</span>
+          <span class="card-name">{{ fnt.name }}</span>
+          <span class="card-desc">{{ fnt.category | replace('_', ' ') | title }}</span>
+        </label>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- Step 6: Topic + Assets -->
+    <section class="section" id="step-topic">
+      <div class="step-header">
+        <span class="step-badge">6</span>
+        <h2 class="section-title">Your Content</h2>
+      </div>
+
+      <div class="content-form">
+        <div class="form-group">
+          <label class="form-label">Topic / What's this post about? <span class="required">*</span></label>
+          <input class="form-input" type="text" name="topic" required
+                 placeholder="e.g. Our new AI product launch, Summer sale 50% off, Morning yoga routine..." />
+        </div>
+
+        <div class="assets-row">
+          <div class="asset-upload-card" id="logoUploadCard">
+            <span class="asset-icon">🏷️</span>
+            <span class="asset-label">Logo</span>
+            <span class="asset-hint">PNG recommended</span>
+            <input type="file" name="logo_file" id="logoFile" accept="image/*" hidden />
+            <button type="button" class="btn btn-sm" onclick="document.getElementById('logoFile').click()">Upload</button>
+            <span class="upload-status" id="logoStatus"></span>
+          </div>
+
+          <div class="asset-upload-card" id="headerUploadCard">
+            <span class="asset-icon">🎯</span>
+            <span class="asset-label">Header Banner</span>
+            <span class="asset-hint">Full-width image</span>
+            <input type="file" name="header_file" id="headerFile" accept="image/*" hidden />
+            <button type="button" class="btn btn-sm" onclick="document.getElementById('headerFile').click()">Upload</button>
+            <span class="upload-status" id="headerStatus"></span>
+          </div>
+
+          <div class="asset-upload-card" id="footerUploadCard">
+            <span class="asset-icon">📌</span>
+            <span class="asset-label">Footer Banner</span>
+            <span class="asset-hint">Full-width image</span>
+            <input type="file" name="footer_file" id="footerFile" accept="image/*" hidden />
+            <button type="button" class="btn btn-sm" onclick="document.getElementById('footerFile').click()">Upload</button>
+            <span class="upload-status" id="footerStatus"></span>
+          </div>
+
+          <div class="asset-upload-card" id="bgUploadCard">
+            <span class="asset-icon">🖼️</span>
+            <span class="asset-label">Custom Background</span>
+            <span class="asset-hint">Replaces AI image</span>
+            <input type="file" name="bg_file" id="bgFile" accept="image/*" hidden />
+            <button type="button" class="btn btn-sm" onclick="document.getElementById('bgFile').click()">Upload</button>
+            <span class="upload-status" id="bgStatus"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Generate Button -->
+    <div class="generate-footer">
+      <div class="generate-summary" id="generateSummary">
+        Select all options above to continue
+      </div>
+      <button type="submit" class="btn btn-primary btn-generate" id="generateBtn" disabled>
+        <span class="btn-icon">✨</span>
+        Generate Post
+      </button>
+    </div>
+
+  </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// ── Industry data for filtering ────────────────────────────────────────────
+const INDUSTRIES = {{ industries | tojson }};
+
+// ── Card selection ─────────────────────────────────────────────────────────
+document.querySelectorAll(".select-card, .palette-card").forEach(card => {
+  card.addEventListener("click", () => {
+    const group = card.dataset.group;
+    document.querySelectorAll(`[data-group="${group}"]`).forEach(c => c.classList.remove("selected"));
+    card.classList.add("selected");
+    card.querySelector("input").checked = true;
+    updateSummary();
+    if (group === "industry") applyIndustryFilter(card.dataset.value);
+    if (group === "industry") autoRecommend(card.dataset.value);
+  });
+});
+
+// ── Tier card selection ────────────────────────────────────────────────────
+document.querySelectorAll(".tier-card").forEach(card => {
+  card.addEventListener("click", () => {
+    document.querySelectorAll(".tier-card").forEach(c => c.classList.remove("selected"));
+    card.classList.add("selected");
+    card.querySelector("input").checked = true;
+  });
+});
+
+// ── Style category filter ──────────────────────────────────────────────────
+document.querySelectorAll(".filter-tab[data-cat]").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".filter-tab[data-cat]").forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+    const cat = tab.dataset.cat;
+    document.querySelectorAll(".style-card").forEach(card => {
+      card.style.display = (cat === "all" || card.dataset.cat === cat) ? "" : "none";
+    });
+  });
+});
+
+// ── Palette category filter ────────────────────────────────────────────────
+document.querySelectorAll(".filter-tab[data-pcat]").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".filter-tab[data-pcat]").forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+    const cat = tab.dataset.pcat;
+    document.querySelectorAll(".palette-card").forEach(card => {
+      card.style.display = (cat === "all" || card.dataset.pcat === cat) ? "" : "none";
+    });
+  });
+});
+
+// ── Industry filter for styles ─────────────────────────────────────────────
+function applyIndustryFilter(industry) {
+  const rec = INDUSTRIES[industry]?.recommended_styles || [];
+  document.querySelectorAll(".style-card").forEach(card => {
+    const isRec = rec.includes(card.dataset.value);
+    card.classList.toggle("recommended", isRec);
+  });
+}
+
+// ── Auto-recommend when industry changes ───────────────────────────────────
+function autoRecommend(industry) {
+  const ind = INDUSTRIES[industry];
+  if (!ind) return;
+  // Select first recommended style if none selected
+  const styleInput = document.querySelector("input[name='image_style']:checked");
+  if (!styleInput && ind.recommended_styles.length) {
+    const card = document.querySelector(`[data-group='image_style'][data-value='${ind.recommended_styles[0]}']`);
+    if (card) card.click();
+  }
+  // Select first recommended palette if none selected
+  const palInput = document.querySelector("input[name='palette_id']:checked");
+  if (!palInput && ind.recommended_palettes.length) {
+    const card = document.querySelector(`[data-group='palette_id'][data-value='${ind.recommended_palettes[0]}']`);
+    if (card) card.click();
+  }
+  // Select first recommended font if none selected
+  const fontInput = document.querySelector("input[name='font_style']:checked");
+  if (!fontInput && ind.recommended_fonts.length) {
+    const card = document.querySelector(`[data-group='font_style'][data-value='${ind.recommended_fonts[0]}']`);
+    if (card) card.click();
+  }
+}
+
+// ── Summary update ─────────────────────────────────────────────────────────
+const REQUIRED = ["industry", "image_style", "caption_tone", "palette_id", "font_style"];
+function updateSummary() {
+  const chosen = {};
+  REQUIRED.forEach(key => {
+    const el = document.querySelector(`input[name='${key}']:checked`);
+    if (el) chosen[key] = el.closest("[data-value]").dataset.value;
+  });
+  const done = REQUIRED.filter(k => chosen[k]).length;
+  const btn = document.getElementById("generateBtn");
+  const summary = document.getElementById("generateSummary");
+  if (done >= REQUIRED.length) {
+    btn.disabled = false;
+    summary.textContent = `Ready! ${Object.values(chosen).join(" · ")}`;
+  } else {
+    btn.disabled = true;
+    summary.textContent = `${done}/${REQUIRED.length} selections made`;
+  }
+}
+
+// ── Quick-start templates ──────────────────────────────────────────────────
+document.querySelectorAll(".quick-start-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const map = {
+      industry: btn.dataset.industry,
+      image_style: btn.dataset.style,
+      caption_tone: btn.dataset.tone,
+      palette_id: btn.dataset.palette,
+      font_style: btn.dataset.font,
+    };
+    Object.entries(map).forEach(([key, val]) => {
+      const card = document.querySelector(`[data-group='${key}'][data-value='${val}']`);
+      if (card) card.click();
+    });
+    document.getElementById("step-topic").scrollIntoView({ behavior: "smooth" });
+  });
+});
+
+// ── File upload preview ────────────────────────────────────────────────────
+[["logoFile","logoStatus"],["headerFile","headerStatus"],["footerFile","footerStatus"],["bgFile","bgStatus"]].forEach(([inputId, statusId]) => {
+  const input = document.getElementById(inputId);
+  const status = document.getElementById(statusId);
+  if (input) input.addEventListener("change", () => {
+    status.textContent = input.files[0]?.name || "";
+  });
+});
+
+// ── Loading state on form submit ───────────────────────────────────────────
+document.getElementById("setupForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const btn = document.getElementById("generateBtn");
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Generating…';
+
+  // Upload assets first, then submit form without files
+  const sid = null; // No session yet — assets uploaded after redirect
+  // Just do normal form submit (assets uploaded separately in editor)
+  form.submit();
+});
+</script>
+{% endblock %}

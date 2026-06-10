@@ -1,0 +1,30 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.env
+.venv/
+venv/
+dist/
+build/
+
+# Root output folder (all finished posts)
+output/*
+!output/.gitkeep
+
+# Storage outputs (generated posts)
+src/storage/outputs/*
+src/storage/sessions/*
+!src/storage/outputs/.gitkeep
+!src/storage/sessions/.gitkeep
+
+# User uploads
+static/uploads/*
+!static/uploads/.gitkeep
+
+# OS
+.DS_Store
+Thumbs.db
+
+output/
+.claude/
+.pytest_cache/
